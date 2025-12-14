@@ -15,7 +15,7 @@
         maxDuration: 10,
         minDelay: 0,
         maxDelay: 8,
-        logoSnowMax: 500
+        logoSnowMax: 800
     };
 
     /**
@@ -49,13 +49,13 @@
         }
 
         accumulateSnow() {
-            // Add initial particles very rapidly to fill text
-            for (let i = 0; i < 300; i++) {
-                setTimeout(() => this.addParticle(), i * 10);
+            // Add initial particles very rapidly to fill outline
+            for (let i = 0; i < 500; i++) {
+                setTimeout(() => this.addParticle(), i * 5);
             }
 
             // Continue adding particles to maintain density
-            setInterval(() => this.addParticle(), 30);
+            setInterval(() => this.addParticle(), 20);
         }
 
         addParticle() {
@@ -74,7 +74,7 @@
             const relY = letterRect.top - logoRect.top;
 
             // Place particles along the OUTLINE/EDGES of the letter
-            const edgeThickness = 8; // How thick the outline area is
+            const edgeThickness = 6; // How thick the outline area is
             let x, y;
 
             // Pick a random edge: 0=top, 1=right, 2=bottom, 3=left
@@ -99,7 +99,7 @@
                     break;
             }
 
-            const size = 1 + Math.random() * 2; // Small particles 1-3px
+            const size = 1.5 + Math.random() * 2; // Particles 1.5-3.5px
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';

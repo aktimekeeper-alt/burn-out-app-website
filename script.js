@@ -6,16 +6,16 @@
 (function() {
     'use strict';
 
-    // Configuration - Dense snow like reference
+    // Configuration - Optimized for performance
     const CONFIG = {
-        snowflakeCount: 250,
-        minSize: 1,
-        maxSize: 3,
-        minDuration: 3,
-        maxDuration: 10,
+        snowflakeCount: 100,
+        minSize: 2,
+        maxSize: 4,
+        minDuration: 5,
+        maxDuration: 12,
         minDelay: 0,
-        maxDelay: 8,
-        logoSnowMax: 10000
+        maxDelay: 10,
+        logoSnowMax: 5000
     };
 
     /**
@@ -130,14 +130,14 @@
         accumulateSnow() {
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
-                // Add initial particles very rapidly to fill letters
-                for (let i = 0; i < 7500; i++) {
-                    setTimeout(() => this.addParticle(), i);
+                // Add initial particles to fill letters
+                for (let i = 0; i < 3000; i++) {
+                    setTimeout(() => this.addParticle(), i * 2);
                 }
 
-                // Continue adding particles until full
-                setInterval(() => this.addParticle(), 5);
-            }, 50);
+                // Continue adding particles slowly until full
+                setInterval(() => this.addParticle(), 20);
+            }, 100);
         }
 
         addParticle() {
@@ -211,7 +211,7 @@
             this.tagline = document.getElementById('tagline');
             this.letters = document.querySelectorAll('.tagline-letter:not(.space)');
             this.particles = [];
-            this.maxParticles = 3000;
+            this.maxParticles = 1500;
             this.outlinePoints = [];
 
             if (!this.tagline || !this.letters.length) return;
@@ -299,11 +299,11 @@
 
         accumulateSnow() {
             setTimeout(() => {
-                for (let i = 0; i < 2000; i++) {
-                    setTimeout(() => this.addParticle(), i);
+                for (let i = 0; i < 1000; i++) {
+                    setTimeout(() => this.addParticle(), i * 3);
                 }
-                setInterval(() => this.addParticle(), 10);
-            }, 100);
+                setInterval(() => this.addParticle(), 30);
+            }, 200);
         }
 
         addParticle() {
@@ -384,31 +384,37 @@
             const duration = this.random(CONFIG.minDuration, CONFIG.maxDuration);
             const delay = this.random(CONFIG.minDelay, CONFIG.maxDelay);
             const startX = this.random(0, 100);
-            const drift = this.random(-30, 30);
+            const drift = this.random(-20, 20);
 
-            // Christmas lights colors with glow
-            const colors = [
-                { bg: '#ffffff', glow: 'rgba(255,255,255,0.8)' },  // White
-                { bg: '#ffffff', glow: 'rgba(255,255,255,0.8)' },  // White (more common)
-                { bg: '#ef4444', glow: 'rgba(239,68,68,0.8)' },    // Red
-                { bg: '#22c55e', glow: 'rgba(34,197,94,0.8)' },    // Green
-                { bg: '#3b82f6', glow: 'rgba(59,130,246,0.8)' },   // Blue
-                { bg: '#fcd34d', glow: 'rgba(252,211,77,0.8)' },   // Gold
-            ];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const isColored = color.bg !== '#ffffff';
-            const glowSize = isColored ? size * 3 : size * 2;
+            // Mostly white with occasional colored Christmas lights
+            const roll = Math.random();
+            let color = '#ffffff';
+            let extraStyle = '';
+
+            if (roll < 0.08) {
+                color = '#ef4444'; // Red
+                extraStyle = 'box-shadow: 0 0 6px #ef4444;';
+            } else if (roll < 0.16) {
+                color = '#22c55e'; // Green
+                extraStyle = 'box-shadow: 0 0 6px #22c55e;';
+            } else if (roll < 0.22) {
+                color = '#3b82f6'; // Blue
+                extraStyle = 'box-shadow: 0 0 6px #3b82f6;';
+            } else if (roll < 0.28) {
+                color = '#fcd34d'; // Gold
+                extraStyle = 'box-shadow: 0 0 6px #fcd34d;';
+            }
 
             snowflake.style.cssText = `
                 left: ${startX}%;
                 width: ${size}px;
                 height: ${size}px;
-                opacity: ${isColored ? 1 : this.random(0.4, 1)};
+                opacity: ${color === '#ffffff' ? this.random(0.5, 1) : 1};
                 animation-duration: ${duration}s;
                 animation-delay: -${delay}s;
                 --drift: ${drift}px;
-                background: ${color.bg};
-                box-shadow: 0 0 ${glowSize}px ${color.glow};
+                background: ${color};
+                ${extraStyle}
             `;
 
             return snowflake;

@@ -8,14 +8,14 @@
 
     // Configuration - Dense snow like reference
     const CONFIG = {
-        snowflakeCount: 200,
+        snowflakeCount: 250,
         minSize: 1,
-        maxSize: 4,
-        minDuration: 4,
-        maxDuration: 12,
+        maxSize: 3,
+        minDuration: 3,
+        maxDuration: 10,
         minDelay: 0,
-        maxDelay: 10,
-        logoSnowMax: 300
+        maxDelay: 8,
+        logoSnowMax: 500
     };
 
     /**
@@ -49,13 +49,13 @@
         }
 
         accumulateSnow() {
-            // Add initial particles rapidly
-            for (let i = 0; i < 150; i++) {
-                setTimeout(() => this.addParticle(), i * 20);
+            // Add initial particles very rapidly to fill text
+            for (let i = 0; i < 300; i++) {
+                setTimeout(() => this.addParticle(), i * 10);
             }
 
-            // Continue adding particles faster
-            setInterval(() => this.addParticle(), 50);
+            // Continue adding particles to maintain density
+            setInterval(() => this.addParticle(), 30);
         }
 
         addParticle() {
@@ -73,10 +73,10 @@
             const relX = letterRect.left - logoRect.left;
             const relY = letterRect.top - logoRect.top;
 
-            // Place particle on top portion of letter (dense accumulation)
+            // Place particles across the ENTIRE letter (snow covers the text)
             const x = relX + Math.random() * letterRect.width;
-            const y = relY + (letterRect.height * 0.05) + Math.random() * (letterRect.height * 0.25);
-            const size = 1 + Math.random() * 3; // Small particles 1-4px
+            const y = relY + Math.random() * letterRect.height;
+            const size = 1 + Math.random() * 2.5; // Small particles 1-3.5px
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';

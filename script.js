@@ -48,18 +48,40 @@
             // Start accumulating snow
             this.accumulateSnow();
 
-            // Shake animation on hover (particles stay)
-            this.letters.forEach(letter => {
-                letter.addEventListener('mouseenter', () => {
-                    letter.classList.add('shake');
-                    setTimeout(() => letter.classList.remove('shake'), 300);
-                });
-            });
+            // Brush off particles when mouse moves over them
+            this.logoText.addEventListener('mousemove', (e) => this.brushOff(e));
 
             // Re-extract on resize
             window.addEventListener('resize', () => {
                 this.outlinePoints = [];
                 this.extractOutlinePoints();
+            });
+        }
+
+        brushOff(e) {
+            const containerRect = this.container.getBoundingClientRect();
+            const mouseX = e.clientX - containerRect.left;
+            const mouseY = e.clientY - containerRect.top;
+            const brushRadius = 25;
+
+            this.particles = this.particles.filter(p => {
+                const px = parseFloat(p.style.left);
+                const py = parseFloat(p.style.top);
+                const dist = Math.sqrt((px - mouseX) ** 2 + (py - mouseY) ** 2);
+
+                if (dist < brushRadius) {
+                    // Shake off this particle
+                    const angle = Math.atan2(py - mouseY, px - mouseX);
+                    const throwX = Math.cos(angle) * (20 + Math.random() * 30);
+                    const throwY = 40 + Math.random() * 20;
+
+                    p.style.transition = 'all 0.4s ease-out';
+                    p.style.transform = `translate(${throwX}px, ${throwY}px)`;
+                    p.style.opacity = '0';
+                    setTimeout(() => p.remove(), 400);
+                    return false;
+                }
+                return true;
             });
         }
 
@@ -228,9 +250,38 @@
             this.extractOutlinePoints();
             this.accumulateSnow();
 
+            // Brush off particles when mouse moves over them
+            this.taglineText.addEventListener('mousemove', (e) => this.brushOff(e));
+
             window.addEventListener('resize', () => {
                 this.outlinePoints = [];
                 this.extractOutlinePoints();
+            });
+        }
+
+        brushOff(e) {
+            const containerRect = this.container.getBoundingClientRect();
+            const mouseX = e.clientX - containerRect.left;
+            const mouseY = e.clientY - containerRect.top;
+            const brushRadius = 15;
+
+            this.particles = this.particles.filter(p => {
+                const px = parseFloat(p.style.left);
+                const py = parseFloat(p.style.top);
+                const dist = Math.sqrt((px - mouseX) ** 2 + (py - mouseY) ** 2);
+
+                if (dist < brushRadius) {
+                    const angle = Math.atan2(py - mouseY, px - mouseX);
+                    const throwX = Math.cos(angle) * (10 + Math.random() * 20);
+                    const throwY = 25 + Math.random() * 15;
+
+                    p.style.transition = 'all 0.3s ease-out';
+                    p.style.transform = `translate(${throwX}px, ${throwY}px)`;
+                    p.style.opacity = '0';
+                    setTimeout(() => p.remove(), 300);
+                    return false;
+                }
+                return true;
             });
         }
 

@@ -85,12 +85,11 @@
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
+                ctx.textBaseline = 'alphabetic';
                 ctx.textAlign = 'left';
 
-                // Draw with vertical offset to match browser rendering
-                const yOffset = fontSize * 0.25;
-                ctx.fillText(char, 0, yOffset);
+                // Draw at baseline position
+                ctx.fillText(char, 0, fontSize * 0.85);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -150,8 +149,8 @@
             // Pick a random outline point
             const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
 
-            // Add slight randomness for natural look, shift 30px left
-            const x = point.x + (Math.random() - 0.5) * 3 - 30;
+            // Add slight randomness for natural look
+            const x = point.x + (Math.random() - 0.5) * 3;
             const y = point.y + (Math.random() - 0.5) * 3;
             const size = 1.5 + Math.random() * 2;
 
@@ -258,12 +257,11 @@
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `300 ${fontSize}px "Exo 2", sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
+                ctx.textBaseline = 'alphabetic';
                 ctx.textAlign = 'left';
 
-                // Draw with vertical offset to match browser rendering
-                const yOffset = fontSize * 0.25;
-                ctx.fillText(char.toUpperCase(), 0, yOffset);
+                // Draw at baseline position
+                ctx.fillText(char.toUpperCase(), 0, fontSize * 0.85);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
@@ -314,7 +312,7 @@
 
             const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
 
-            const x = point.x + (Math.random() - 0.5) * 2 - 30;
+            const x = point.x + (Math.random() - 0.5) * 2;
             const y = point.y + (Math.random() - 0.5) * 2;
             const size = 1 + Math.random() * 1.5;
 

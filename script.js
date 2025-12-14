@@ -210,6 +210,149 @@
     }
 
     /**
+     * Tagline Snow Accumulation Effect - Snow particles on tagline letter outlines
+     */
+    class TaglineSnowAccumulation {
+        constructor() {
+            this.tagline = document.getElementById('tagline');
+            this.letters = document.querySelectorAll('.tagline-letter:not(.space)');
+            this.particles = [];
+            this.maxParticles = 3000;
+            this.outlinePoints = [];
+
+            if (!this.tagline || !this.letters.length) return;
+            this.init();
+        }
+
+        init() {
+            this.taglineText = this.tagline.querySelector('.tagline-text');
+            this.container = document.createElement('div');
+            this.container.className = 'tagline-snow-container';
+            this.taglineText.style.position = 'relative';
+            this.taglineText.appendChild(this.container);
+
+            this.extractOutlinePoints();
+            this.accumulateSnow();
+
+            window.addEventListener('resize', () => {
+                this.outlinePoints = [];
+                this.extractOutlinePoints();
+            });
+        }
+
+        extractOutlinePoints() {
+            const containerRect = this.taglineText.getBoundingClientRect();
+
+            this.letters.forEach(letter => {
+                const char = letter.textContent;
+                if (!char.trim()) return;
+
+                const letterRect = letter.getBoundingClientRect();
+                const relX = letterRect.left - containerRect.left;
+                const relY = letterRect.top - containerRect.top;
+                const width = letterRect.width;
+                const height = letterRect.height;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.ceil(width);
+                canvas.height = Math.ceil(height);
+                const ctx = canvas.getContext('2d');
+
+                const style = window.getComputedStyle(letter);
+                const fontSize = parseFloat(style.fontSize);
+                ctx.font = `300 ${fontSize}px "Exo 2", sans-serif`;
+                ctx.fillStyle = 'white';
+                ctx.textBaseline = 'top';
+                ctx.textAlign = 'left';
+
+                const metrics = ctx.measureText(char.toUpperCase());
+                const textWidth = metrics.width;
+                const offsetX = (width - textWidth) / 2;
+
+                ctx.fillText(char.toUpperCase(), offsetX, 0);
+
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                for (let py = 0; py < canvas.height; py += 1) {
+                    for (let px = 0; px < canvas.width; px += 1) {
+                        const i = (py * canvas.width + px) * 4;
+                        if (data[i + 3] > 100) {
+                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height);
+                            if (isEdge) {
+                                this.outlinePoints.push({
+                                    x: relX + px,
+                                    y: relY + py,
+                                    letter: letter
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        isEdgePixel(data, x, y, width, height) {
+            const neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+            for (const [dx, dy] of neighbors) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height) return true;
+                const ni = (ny * width + nx) * 4;
+                if (data[ni + 3] < 100) return true;
+            }
+            return false;
+        }
+
+        accumulateSnow() {
+            setTimeout(() => {
+                for (let i = 0; i < 2000; i++) {
+                    setTimeout(() => this.addParticle(), i);
+                }
+                setInterval(() => this.addParticle(), 10);
+            }, 100);
+        }
+
+        addParticle() {
+            if (this.outlinePoints.length === 0) return;
+            if (this.particles.length >= this.maxParticles) return;
+
+            const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
+
+            const x = point.x + (Math.random() - 0.5) * 2;
+            const y = point.y + (Math.random() - 0.5) * 2;
+            const size = 1 + Math.random() * 1.5;
+
+            const colorRoll = Math.random();
+            let color = '#ffffff';
+            let glow = '';
+            if (colorRoll < 0.10) {
+                color = '#ef4444';
+                glow = 'box-shadow: 0 0 4px #ef4444;';
+            } else if (colorRoll < 0.20) {
+                color = '#22c55e';
+                glow = 'box-shadow: 0 0 4px #22c55e;';
+            } else if (colorRoll < 0.28) {
+                glow = 'box-shadow: 0 0 3px #fff;';
+            }
+
+            const particle = document.createElement('div');
+            particle.className = 'snow-particle';
+            particle.style.cssText = `
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${color};
+                ${glow}
+            `;
+
+            this.container.appendChild(particle);
+            this.particles.push(particle);
+        }
+    }
+
+    /**
      * Snow Effect Class - Main falling snow
      */
     class SnowEffect {
@@ -451,6 +594,7 @@
         addDynamicStyles();
         new SnowEffect();
         new LogoSnowAccumulation();
+        new TaglineSnowAccumulation();
         new WaitlistForm();
         new ScrollAnimations();
     }

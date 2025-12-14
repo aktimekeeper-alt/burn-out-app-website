@@ -15,7 +15,7 @@
         maxDuration: 10,
         minDelay: 0,
         maxDelay: 8,
-        logoSnowMax: 800
+        logoSnowMax: 2000
     };
 
     /**
@@ -48,9 +48,12 @@
             // Start accumulating snow
             this.accumulateSnow();
 
-            // Add shake interaction
+            // Shake animation on hover (particles stay)
             this.letters.forEach(letter => {
-                letter.addEventListener('mouseenter', () => this.shakeOff(letter));
+                letter.addEventListener('mouseenter', () => {
+                    letter.classList.add('shake');
+                    setTimeout(() => letter.classList.remove('shake'), 300);
+                });
             });
 
             // Re-extract on resize
@@ -142,23 +145,21 @@
         accumulateSnow() {
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
-                // Add initial particles rapidly
-                for (let i = 0; i < 500; i++) {
-                    setTimeout(() => this.addParticle(), i * 5);
+                // Add initial particles very rapidly to fill letters
+                for (let i = 0; i < 1500; i++) {
+                    setTimeout(() => this.addParticle(), i * 2);
                 }
 
-                // Continue adding particles to maintain density
-                setInterval(() => this.addParticle(), 20);
+                // Continue adding particles until full
+                setInterval(() => this.addParticle(), 10);
             }, 100);
         }
 
         addParticle() {
             if (this.outlinePoints.length === 0) return;
 
-            if (this.particles.length >= this.maxParticles) {
-                const old = this.particles.shift();
-                old.remove();
-            }
+            // Stop adding once we have enough particles (but don't remove old ones)
+            if (this.particles.length >= this.maxParticles) return;
 
             // Pick a random outline point
             const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];

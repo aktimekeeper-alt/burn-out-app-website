@@ -215,23 +215,7 @@ body {
    Snow Pile on Logo Text
    ======================================== */
 
-.logo {
-    position: relative;
-    display: inline-block;
-}
-
-.logo-text {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    gap: 0.02em;
-}
-
-/* Individual letters with snow */
-.letter {
-    position: relative;
-    display: inline-block;
-}
+/* Individual letters with snow - positioned relative for snow containers */
 
 /* Snow pile on each letter */
 .letter::before {
@@ -398,12 +382,14 @@ body {
 }
 
 .hero-content {
-    max-width: 800px;
+    max-width: 900px;
+    width: 100%;
 }
 
 .logo-container {
     margin-bottom: 2rem;
     position: relative;
+    overflow: visible;
 }
 
 .tire-marks {
@@ -427,9 +413,18 @@ body {
 
 .logo-text {
     font-family: var(--font-display);
-    font-size: clamp(4rem, 15vw, 10rem);
+    font-size: clamp(3rem, 12vw, 8rem);
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
+}
+
+.letter {
+    position: relative;
+    display: inline-block;
     color: transparent;
     background: linear-gradient(180deg,
         #ffffff 0%,
@@ -440,8 +435,6 @@ body {
     text-shadow:
         0 0 60px rgba(255, 255, 255, 0.3),
         0 0 100px rgba(147, 197, 253, 0.2);
-    display: block;
-    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5));
 }
 
 .logo-tagline {

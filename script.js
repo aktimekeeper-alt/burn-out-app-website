@@ -194,7 +194,7 @@
             if (!data) return;
 
             // Limit particles per letter
-            if (data.particles.length >= 8) {
+            if (data.particles.length >= 6) {
                 const old = data.particles.shift();
                 old.classList.add('melting');
                 setTimeout(() => old.remove(), 600);
@@ -203,10 +203,10 @@
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
 
-            // Position snow on top of the letter
-            const x = 10 + Math.random() * 80; // Stay within letter bounds
-            const y = Math.random() * 8; // Near top
-            const size = Math.random() * 5 + 4;
+            // Position snow sitting ON the letter (at bottom of container)
+            const x = 5 + Math.random() * 90; // Spread across letter
+            const y = 12 + Math.random() * 10; // At bottom of container = top of letter
+            const size = Math.random() * 6 + 5;
 
             particle.style.cssText = `
                 left: ${x}%;

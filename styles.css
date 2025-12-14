@@ -215,48 +215,50 @@ body {
    Snow Pile on Logo Text
    ======================================== */
 
-/* Individual letters with snow - positioned relative for snow containers */
-
-/* Snow pile on each letter */
+/* Snow cap sitting ON TOP of each letter */
 .letter::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: 5%;
-    right: 5%;
-    height: 12px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
     background:
-        radial-gradient(ellipse 6px 5px at 15% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 8px 6px at 40% 100%, rgba(255,255,255,0.9) 50%, transparent 50%),
-        radial-gradient(ellipse 7px 5px at 65% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 5px 4px at 85% 100%, rgba(255,255,255,0.9) 50%, transparent 50%);
+        radial-gradient(ellipse 10px 8px at 10% 90%, rgba(255,255,255,0.95) 50%, transparent 50%),
+        radial-gradient(ellipse 14px 10px at 30% 85%, rgba(255,255,255,0.9) 50%, transparent 50%),
+        radial-gradient(ellipse 12px 9px at 50% 90%, rgba(255,255,255,0.95) 50%, transparent 50%),
+        radial-gradient(ellipse 16px 11px at 70% 85%, rgba(255,255,255,0.9) 50%, transparent 50%),
+        radial-gradient(ellipse 10px 8px at 90% 90%, rgba(255,255,255,0.95) 50%, transparent 50%);
     z-index: 10;
     pointer-events: none;
+    filter: blur(0.3px);
 }
 
-/* Icicles on each letter */
+/* Icicles hanging from bottom of each letter */
 .letter::after {
     content: '';
     position: absolute;
-    bottom: 0px;
-    left: 10%;
-    right: 10%;
-    height: 15px;
+    bottom: -12px;
+    left: 5%;
+    right: 5%;
+    height: 20px;
     background:
-        linear-gradient(180deg, rgba(200, 230, 255, 0.7) 0%, transparent 100%) 20% 0 / 3px 12px no-repeat,
-        linear-gradient(180deg, rgba(200, 230, 255, 0.6) 0%, transparent 100%) 50% 0 / 2px 8px no-repeat,
-        linear-gradient(180deg, rgba(200, 230, 255, 0.7) 0%, transparent 100%) 80% 0 / 3px 10px no-repeat;
+        linear-gradient(180deg, rgba(180, 220, 255, 0.9) 0%, rgba(150, 200, 255, 0.4) 60%, transparent 100%) 15% 0 / 4px 18px no-repeat,
+        linear-gradient(180deg, rgba(180, 220, 255, 0.8) 0%, rgba(150, 200, 255, 0.3) 60%, transparent 100%) 35% 0 / 3px 12px no-repeat,
+        linear-gradient(180deg, rgba(180, 220, 255, 0.9) 0%, rgba(150, 200, 255, 0.4) 60%, transparent 100%) 55% 0 / 5px 20px no-repeat,
+        linear-gradient(180deg, rgba(180, 220, 255, 0.8) 0%, rgba(150, 200, 255, 0.3) 60%, transparent 100%) 75% 0 / 3px 14px no-repeat,
+        linear-gradient(180deg, rgba(180, 220, 255, 0.9) 0%, rgba(150, 200, 255, 0.4) 60%, transparent 100%) 90% 0 / 4px 16px no-repeat;
     z-index: 10;
     pointer-events: none;
 }
 
-/* Snow accumulation container for dynamic particles */
+/* Snow accumulation container - sits on top of letter */
 .snow-on-letter {
     position: absolute;
-    top: -15px;
-    left: 0;
-    width: 100%;
-    height: 20px;
+    top: -5px;
+    left: -10%;
+    width: 120%;
+    height: 25px;
     pointer-events: none;
     z-index: 20;
     overflow: visible;

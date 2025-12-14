@@ -87,10 +87,15 @@
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
                 ctx.textBaseline = 'top';
-                ctx.textAlign = 'center';
+                ctx.textAlign = 'left';
 
-                // Draw letter
-                ctx.fillText(char, canvas.width / 2, 0);
+                // Measure text to center it properly
+                const metrics = ctx.measureText(char);
+                const textWidth = metrics.width;
+                const offsetX = (width - textWidth) / 2;
+
+                // Draw letter centered
+                ctx.fillText(char, offsetX, 0);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);

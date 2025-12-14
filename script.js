@@ -77,8 +77,8 @@
 
             // Place particle on top edge of letter (with small offset into letter)
             const x = relX + Math.random() * letterRect.width;
-            const y = relY + (letterRect.height * 0.15) + Math.random() * (letterRect.height * 0.1);
-            const size = 2 + Math.random() * 3;
+            const y = relY + (letterRect.height * 0.12) + Math.random() * (letterRect.height * 0.12);
+            const size = 4 + Math.random() * 5; // Larger like falling snowflakes
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';

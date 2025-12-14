@@ -384,17 +384,31 @@
             const duration = this.random(CONFIG.minDuration, CONFIG.maxDuration);
             const delay = this.random(CONFIG.minDelay, CONFIG.maxDelay);
             const startX = this.random(0, 100);
-            const opacity = this.random(0.3, 1);
             const drift = this.random(-30, 30);
+
+            // Christmas lights colors with glow
+            const colors = [
+                { bg: '#ffffff', glow: 'rgba(255,255,255,0.8)' },  // White
+                { bg: '#ffffff', glow: 'rgba(255,255,255,0.8)' },  // White (more common)
+                { bg: '#ef4444', glow: 'rgba(239,68,68,0.8)' },    // Red
+                { bg: '#22c55e', glow: 'rgba(34,197,94,0.8)' },    // Green
+                { bg: '#3b82f6', glow: 'rgba(59,130,246,0.8)' },   // Blue
+                { bg: '#fcd34d', glow: 'rgba(252,211,77,0.8)' },   // Gold
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const isColored = color.bg !== '#ffffff';
+            const glowSize = isColored ? size * 3 : size * 2;
 
             snowflake.style.cssText = `
                 left: ${startX}%;
                 width: ${size}px;
                 height: ${size}px;
-                opacity: ${opacity};
+                opacity: ${isColored ? 1 : this.random(0.4, 1)};
                 animation-duration: ${duration}s;
                 animation-delay: -${delay}s;
                 --drift: ${drift}px;
+                background: ${color.bg};
+                box-shadow: 0 0 ${glowSize}px ${color.glow};
             `;
 
             return snowflake;

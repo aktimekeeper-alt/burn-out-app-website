@@ -245,8 +245,7 @@ body {
 .letter {
     position: relative;
     display: inline-block;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    color: transparent;
 }
 
 .logo-tagline {
@@ -266,7 +265,7 @@ body {
 .tagline-letter {
     position: relative;
     display: inline-block;
-    color: var(--color-text-secondary);
+    color: transparent;
 }
 
 .tagline-letter.space {

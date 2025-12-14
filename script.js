@@ -150,8 +150,8 @@
             // Pick a random outline point
             const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
 
-            // Add slight randomness for natural look
-            const x = point.x + (Math.random() - 0.5) * 3;
+            // Add slight randomness for natural look, shift 20px left
+            const x = point.x + (Math.random() - 0.5) * 3 - 20;
             const y = point.y + (Math.random() - 0.5) * 3;
             const size = 1.5 + Math.random() * 2;
 
@@ -314,7 +314,7 @@
 
             const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
 
-            const x = point.x + (Math.random() - 0.5) * 2;
+            const x = point.x + (Math.random() - 0.5) * 2 - 20;
             const y = point.y + (Math.random() - 0.5) * 2;
             const size = 1 + Math.random() * 1.5;
 

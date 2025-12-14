@@ -70,30 +70,30 @@
 
                 // Create offscreen canvas to render the letter
                 const canvas = document.createElement('canvas');
-                const scale = 2; // Higher resolution for better detection
-                const padding = 20 * scale; // Add padding to capture full letter
-                canvas.width = letterRect.width * scale + padding * 2;
-                canvas.height = letterRect.height * scale + padding * 2;
+                const scale = 2;
+                canvas.width = letterRect.width * scale;
+                canvas.height = letterRect.height * scale;
                 const ctx = canvas.getContext('2d');
 
-                // Get computed font style
+                // Get computed font style - match the actual rendering
                 const style = window.getComputedStyle(letter);
                 const fontSize = parseFloat(style.fontSize) * scale;
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'middle';
-                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.textAlign = 'left';
 
-                // Draw the letter centered in canvas
-                ctx.fillText(char, canvas.width / 2, canvas.height / 2);
+                // Measure to center the letter properly
+                const metrics = ctx.measureText(char);
+                const textWidth = metrics.width;
+                const drawX = (canvas.width - textWidth) / 2;
+                const drawY = 0;
+
+                ctx.fillText(char, drawX, drawY);
 
                 // Get pixel data and find edge points
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
-
-                // Calculate center offset
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
 
                 // Sample points along the edges
                 for (let y = 0; y < canvas.height; y += 2) {
@@ -101,16 +101,12 @@
                         const i = (y * canvas.width + x) * 4;
                         const alpha = data[i + 3];
 
-                        // Check if this is an edge pixel (has alpha but neighbor doesn't)
                         if (alpha > 50) {
                             const isEdge = this.isEdgePixel(data, x, y, canvas.width, canvas.height);
                             if (isEdge) {
-                                // Map canvas position back to element position
-                                // Canvas is centered, so offset from center
-                                const offsetX = (x - centerX) / scale;
-                                const offsetY = (y - centerY) / scale;
-                                const mappedX = relX + letterRect.width / 2 + offsetX;
-                                const mappedY = relY + letterRect.height / 2 + offsetY;
+                                // Direct mapping - canvas matches element size
+                                const mappedX = relX + x / scale;
+                                const mappedY = relY + y / scale;
 
                                 this.outlinePoints.push({
                                     x: mappedX,

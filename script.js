@@ -19,7 +19,8 @@
     };
 
     /**
-     * Logo Snow Accumulation Effect - Snow particles on letters
+     * Logo Snow Accumulation Effect - Snow particles on letter outlines
+     * Uses canvas to detect actual letter shapes
      */
     class LogoSnowAccumulation {
         constructor() {
@@ -27,6 +28,7 @@
             this.letters = document.querySelectorAll('.letter');
             this.particles = [];
             this.maxParticles = CONFIG.logoSnowMax;
+            this.outlinePoints = []; // Store all outline points
 
             if (!this.logo || !this.letters.length) return;
             this.init();
@@ -39,6 +41,9 @@
             this.logo.style.position = 'relative';
             this.logo.appendChild(this.container);
 
+            // Extract outline points from each letter
+            this.extractOutlinePoints();
+
             // Start accumulating snow
             this.accumulateSnow();
 
@@ -46,63 +51,119 @@
             this.letters.forEach(letter => {
                 letter.addEventListener('mouseenter', () => this.shakeOff(letter));
             });
+
+            // Re-extract on resize
+            window.addEventListener('resize', () => {
+                this.outlinePoints = [];
+                this.extractOutlinePoints();
+            });
+        }
+
+        extractOutlinePoints() {
+            const logoRect = this.logo.getBoundingClientRect();
+
+            this.letters.forEach(letter => {
+                const char = letter.textContent;
+                const letterRect = letter.getBoundingClientRect();
+                const relX = letterRect.left - logoRect.left;
+                const relY = letterRect.top - logoRect.top;
+
+                // Create offscreen canvas to render the letter
+                const canvas = document.createElement('canvas');
+                const scale = 2; // Higher resolution for better detection
+                canvas.width = letterRect.width * scale;
+                canvas.height = letterRect.height * scale;
+                const ctx = canvas.getContext('2d');
+
+                // Get computed font style
+                const style = window.getComputedStyle(letter);
+                const fontSize = parseFloat(style.fontSize) * scale;
+                ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
+                ctx.fillStyle = 'white';
+                ctx.textBaseline = 'top';
+
+                // Draw the letter
+                ctx.fillText(char, 0, 0);
+
+                // Get pixel data and find edge points
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                // Sample points along the edges
+                for (let y = 0; y < canvas.height; y += 2) {
+                    for (let x = 0; x < canvas.width; x += 2) {
+                        const i = (y * canvas.width + x) * 4;
+                        const alpha = data[i + 3];
+
+                        // Check if this is an edge pixel (has alpha but neighbor doesn't)
+                        if (alpha > 50) {
+                            const isEdge = this.isEdgePixel(data, x, y, canvas.width, canvas.height);
+                            if (isEdge) {
+                                this.outlinePoints.push({
+                                    x: relX + (x / scale),
+                                    y: relY + (y / scale),
+                                    letter: letter
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        isEdgePixel(data, x, y, width, height) {
+            // Check if any neighboring pixel is transparent (making this an edge)
+            const neighbors = [
+                [-1, 0], [1, 0], [0, -1], [0, 1],
+                [-1, -1], [1, -1], [-1, 1], [1, 1]
+            ];
+
+            for (const [dx, dy] of neighbors) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+                    return true; // At boundary
+                }
+                const ni = (ny * width + nx) * 4;
+                if (data[ni + 3] < 50) {
+                    return true; // Neighbor is transparent
+                }
+            }
+            return false;
         }
 
         accumulateSnow() {
-            // Add initial particles very rapidly to fill outline
-            for (let i = 0; i < 500; i++) {
-                setTimeout(() => this.addParticle(), i * 5);
-            }
+            // Wait a bit for outline extraction, then add particles
+            setTimeout(() => {
+                // Add initial particles rapidly
+                for (let i = 0; i < 500; i++) {
+                    setTimeout(() => this.addParticle(), i * 5);
+                }
 
-            // Continue adding particles to maintain density
-            setInterval(() => this.addParticle(), 20);
+                // Continue adding particles to maintain density
+                setInterval(() => this.addParticle(), 20);
+            }, 100);
         }
 
         addParticle() {
+            if (this.outlinePoints.length === 0) return;
+
             if (this.particles.length >= this.maxParticles) {
                 const old = this.particles.shift();
                 old.remove();
             }
 
-            // Pick random letter
-            const letter = this.letters[Math.floor(Math.random() * this.letters.length)];
-            const letterRect = letter.getBoundingClientRect();
-            const logoRect = this.logo.getBoundingClientRect();
+            // Pick a random outline point
+            const point = this.outlinePoints[Math.floor(Math.random() * this.outlinePoints.length)];
 
-            // Position relative to logo container
-            const relX = letterRect.left - logoRect.left;
-            const relY = letterRect.top - logoRect.top;
-
-            // Place particles along the OUTLINE/EDGES of the letter
-            const edgeThickness = 6; // How thick the outline area is
-            let x, y;
-
-            // Pick a random edge: 0=top, 1=right, 2=bottom, 3=left
-            const edge = Math.floor(Math.random() * 4);
-
-            switch(edge) {
-                case 0: // Top edge
-                    x = relX + Math.random() * letterRect.width;
-                    y = relY + Math.random() * edgeThickness;
-                    break;
-                case 1: // Right edge
-                    x = relX + letterRect.width - Math.random() * edgeThickness;
-                    y = relY + Math.random() * letterRect.height;
-                    break;
-                case 2: // Bottom edge
-                    x = relX + Math.random() * letterRect.width;
-                    y = relY + letterRect.height - Math.random() * edgeThickness;
-                    break;
-                case 3: // Left edge
-                    x = relX + Math.random() * edgeThickness;
-                    y = relY + Math.random() * letterRect.height;
-                    break;
-            }
-
-            const size = 1.5 + Math.random() * 2; // Particles 1.5-3.5px
+            // Add slight randomness for natural look
+            const x = point.x + (Math.random() - 0.5) * 3;
+            const y = point.y + (Math.random() - 0.5) * 3;
+            const size = 1.5 + Math.random() * 2;
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
+            particle.dataset.letter = point.letter.dataset.letter;
             particle.style.cssText = `
                 left: ${x}px;
                 top: ${y}px;
@@ -118,14 +179,10 @@
             letter.classList.add('shake');
             setTimeout(() => letter.classList.remove('shake'), 300);
 
-            // Remove nearby particles
-            const letterRect = letter.getBoundingClientRect();
-            const logoRect = this.logo.getBoundingClientRect();
-            const relX = letterRect.left - logoRect.left;
+            const letterId = letter.dataset.letter;
 
             this.particles = this.particles.filter(p => {
-                const px = parseFloat(p.style.left);
-                if (px >= relX && px <= relX + letterRect.width) {
+                if (p.dataset.letter === letterId) {
                     p.style.transition = 'all 0.3s ease-out';
                     p.style.transform = 'translateY(40px)';
                     p.style.opacity = '0';

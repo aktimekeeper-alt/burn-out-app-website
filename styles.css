@@ -246,10 +246,6 @@ body {
     position: relative;
     display: inline-block;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-    text-shadow:
-        0 0 30px rgba(255, 255, 255, 0.2),
-        0 0 60px rgba(147, 197, 253, 0.15);
 }
 
 .logo-tagline {

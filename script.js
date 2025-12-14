@@ -113,82 +113,103 @@
     }
 
     /**
-     * Logo Snow Accumulation Effect
+     * Logo Snow Accumulation Effect - Snow on each letter
      */
     class LogoSnowAccumulation {
         constructor() {
             this.logo = document.getElementById('mainLogo');
-            this.snowPile = document.getElementById('logoSnowPile');
-            this.particles = [];
+            this.letters = document.querySelectorAll('.letter');
+            this.letterSnow = new Map(); // Track snow per letter
 
-            if (!this.logo || !this.snowPile) return;
+            if (!this.logo || !this.letters.length) return;
             this.init();
         }
 
         init() {
-            // Start accumulating snow on the logo
+            // Add snow containers to each letter
+            this.letters.forEach(letter => {
+                const snowContainer = document.createElement('div');
+                snowContainer.className = 'snow-on-letter';
+                letter.appendChild(snowContainer);
+                this.letterSnow.set(letter, { container: snowContainer, particles: [] });
+            });
+
+            // Start accumulating snow
             this.accumulateSnow();
 
-            // Add interaction - shake off snow on hover
-            this.logo.addEventListener('mouseenter', () => {
-                this.shakeOffSome();
+            // Add interaction - shake off snow on hover per letter
+            this.letters.forEach(letter => {
+                letter.addEventListener('mouseenter', () => {
+                    this.shakeOffLetter(letter);
+                });
             });
         }
 
         accumulateSnow() {
             // Add initial snow particles
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => this.addParticle(), i * 100);
+            for (let i = 0; i < 35; i++) {
+                setTimeout(() => this.addParticleToRandomLetter(), i * 80);
             }
 
             // Continue adding snow periodically
             setInterval(() => {
-                if (this.particles.length < CONFIG.logoSnowMax) {
-                    this.addParticle();
-                }
-            }, 800);
+                this.addParticleToRandomLetter();
+            }, 600);
         }
 
-        addParticle() {
+        addParticleToRandomLetter() {
+            const letterArray = Array.from(this.letters);
+            const randomLetter = letterArray[Math.floor(Math.random() * letterArray.length)];
+            this.addParticle(randomLetter);
+        }
+
+        addParticle(letter) {
+            const data = this.letterSnow.get(letter);
+            if (!data) return;
+
+            // Limit particles per letter
+            if (data.particles.length >= 8) {
+                const old = data.particles.shift();
+                old.classList.add('melting');
+                setTimeout(() => old.remove(), 600);
+            }
+
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
 
-            const logoRect = this.logo.getBoundingClientRect();
-            const pileRect = this.snowPile.getBoundingClientRect();
-
-            // Position snow on top edge of letters
-            const x = Math.random() * 100;
-            const y = Math.random() * 15 - 5; // Near top of text
-            const size = Math.random() * 6 + 3;
+            // Position snow on top of the letter
+            const x = 10 + Math.random() * 80; // Stay within letter bounds
+            const y = Math.random() * 8; // Near top
+            const size = Math.random() * 5 + 4;
 
             particle.style.cssText = `
                 left: ${x}%;
-                top: ${y}%;
+                top: ${y}px;
                 width: ${size}px;
                 height: ${size}px;
             `;
 
-            this.snowPile.appendChild(particle);
-            this.particles.push(particle);
-
-            // Remove oldest particles if too many
-            if (this.particles.length > CONFIG.logoSnowMax) {
-                const old = this.particles.shift();
-                old.classList.add('melting');
-                setTimeout(() => old.remove(), 800);
-            }
+            data.container.appendChild(particle);
+            data.particles.push(particle);
         }
 
-        shakeOffSome() {
-            // Remove some particles when hovering
-            const toRemove = Math.min(5, this.particles.length);
+        shakeOffLetter(letter) {
+            const data = this.letterSnow.get(letter);
+            if (!data) return;
+
+            // Add shake animation to letter
+            letter.classList.add('shake');
+            setTimeout(() => letter.classList.remove('shake'), 300);
+
+            // Remove some particles from this letter
+            const toRemove = Math.min(3, data.particles.length);
             for (let i = 0; i < toRemove; i++) {
-                const particle = this.particles.shift();
+                const particle = data.particles.shift();
                 if (particle) {
-                    particle.style.transition = 'all 0.5s ease-out';
-                    particle.style.transform = `translateY(20px) rotate(${Math.random() * 360}deg)`;
+                    particle.style.transition = 'all 0.4s ease-out';
+                    particle.style.transform = `translateY(30px) rotate(${Math.random() * 360}deg)`;
                     particle.style.opacity = '0';
-                    setTimeout(() => particle.remove(), 500);
+                    setTimeout(() => particle.remove(), 400);
                 }
             }
         }

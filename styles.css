@@ -88,16 +88,17 @@ body {
     overflow: visible;
 }
 
-/* Individual snow particle - styled like falling snowflakes */
+/* Individual snow particle - exact same style as falling snowflakes */
 .snow-particle {
     position: absolute;
+    color: rgba(255, 255, 255, 0.9);
+    pointer-events: none;
     border-radius: 50%;
     background: radial-gradient(circle,
         rgba(255, 255, 255, 0.95) 0%,
         rgba(255, 255, 255, 0.5) 40%,
         transparent 70%);
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
-    animation: snowLand 0.3s ease-out forwards;
 }
 
 @keyframes snowLand {
@@ -214,6 +215,7 @@ body {
 
 .logo {
     position: relative;
+    overflow: visible;
 }
 
 .logo-text {

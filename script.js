@@ -75,10 +75,12 @@
             const relX = letterRect.left - logoRect.left;
             const relY = letterRect.top - logoRect.top;
 
-            // Place particle on top edge of letter (with small offset into letter)
+            // Place particle on top edge of letter
             const x = relX + Math.random() * letterRect.width;
-            const y = relY + (letterRect.height * 0.12) + Math.random() * (letterRect.height * 0.12);
-            const size = 4 + Math.random() * 5; // Larger like falling snowflakes
+            const y = relY + (letterRect.height * 0.1) + Math.random() * (letterRect.height * 0.15);
+            const size = CONFIG.minSize + Math.random() * (CONFIG.maxSize - CONFIG.minSize); // Same as falling snowflakes (3-8px)
+
+            const opacity = 0.5 + Math.random() * 0.5; // 0.5-1 opacity
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
@@ -87,6 +89,7 @@
                 top: ${y}px;
                 width: ${size}px;
                 height: ${size}px;
+                opacity: ${opacity};
             `;
 
             this.container.appendChild(particle);

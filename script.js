@@ -21,124 +21,6 @@
     };
 
     /**
-     * Cursor Icicle Formation Effect
-     */
-    class CursorIcicleEffect {
-        constructor() {
-            this.container = document.getElementById('cursorSnow');
-            this.icicles = [];
-            this.mouseX = 0;
-            this.mouseY = 0;
-            this.isActive = false;
-            this.meltTimer = null;
-            this.frostRing = null;
-            this.maxIcicles = 12;
-
-            if (!this.container) return;
-            this.init();
-        }
-
-        init() {
-            // Add frost ring
-            this.frostRing = document.createElement('div');
-            this.frostRing.className = 'frost-ring';
-            this.container.appendChild(this.frostRing);
-
-            // Track mouse movement
-            document.addEventListener('mousemove', (e) => {
-                this.mouseX = e.clientX;
-                this.mouseY = e.clientY;
-                this.container.style.left = this.mouseX + 'px';
-                this.container.style.top = this.mouseY + 'px';
-
-                if (!this.isActive) {
-                    this.isActive = true;
-                    this.container.classList.add('active');
-                }
-
-                // Reset melt timer
-                clearTimeout(this.meltTimer);
-                this.meltTimer = setTimeout(() => {
-                    this.meltIcicles();
-                }, 2500);
-            });
-
-            document.addEventListener('mouseleave', () => {
-                this.isActive = false;
-                this.container.classList.remove('active');
-                this.meltIcicles();
-            });
-
-            // Form icicles periodically
-            this.startForming();
-        }
-
-        startForming() {
-            setInterval(() => {
-                if (this.isActive && this.icicles.length < this.maxIcicles) {
-                    this.addIcicle();
-                }
-            }, 300);
-
-            // Occasionally drip from existing icicles
-            setInterval(() => {
-                if (this.icicles.length > 0) {
-                    const randomIcicle = this.icicles[Math.floor(Math.random() * this.icicles.length)];
-                    if (randomIcicle && !randomIcicle.classList.contains('dripping')) {
-                        randomIcicle.classList.add('dripping');
-                        setTimeout(() => randomIcicle.classList.remove('dripping'), 600);
-                    }
-                }
-            }, 2000);
-        }
-
-        addIcicle() {
-            const icicle = document.createElement('div');
-            icicle.className = 'cursor-icicle';
-
-            // Position icicles around the bottom half of cursor (hanging down)
-            const angle = Math.PI * 0.3 + Math.random() * Math.PI * 0.4; // Bottom arc
-            const distance = 25 + Math.random() * 20;
-            const x = Math.cos(angle) * distance + 60;
-            const y = Math.sin(angle) * distance + 40;
-
-            // Random icicle properties
-            const height = 15 + Math.random() * 25;
-            const width = 3 + Math.random() * 3;
-            const rotation = (Math.random() - 0.5) * 20;
-
-            icicle.style.cssText = `
-                left: ${x}px;
-                top: ${y}px;
-                width: ${width}px;
-                height: ${height}px;
-                transform: rotate(${rotation}deg);
-            `;
-
-            this.container.appendChild(icicle);
-            this.icicles.push(icicle);
-
-            // Remove old icicles if too many
-            if (this.icicles.length > this.maxIcicles) {
-                const old = this.icicles.shift();
-                old.classList.add('melting');
-                setTimeout(() => old.remove(), 500);
-            }
-        }
-
-        meltIcicles() {
-            // Melt icicles one by one
-            this.icicles.forEach((icicle, index) => {
-                setTimeout(() => {
-                    icicle.classList.add('melting');
-                    setTimeout(() => icicle.remove(), 500);
-                }, index * 80);
-            });
-            this.icicles = [];
-        }
-    }
-
-    /**
      * Logo Snow Accumulation Effect - Snow on each letter
      */
     class LogoSnowAccumulation {
@@ -487,7 +369,6 @@
     function init() {
         addDynamicStyles();
         new SnowEffect();
-        new CursorIcicleEffect();
         new LogoSnowAccumulation();
         new WaitlistForm();
         new ScrollAnimations();

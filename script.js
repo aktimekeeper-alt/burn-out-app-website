@@ -71,8 +71,9 @@
                 // Create offscreen canvas to render the letter
                 const canvas = document.createElement('canvas');
                 const scale = 2; // Higher resolution for better detection
-                canvas.width = letterRect.width * scale;
-                canvas.height = letterRect.height * scale;
+                const padding = 20 * scale; // Add padding to capture full letter
+                canvas.width = letterRect.width * scale + padding * 2;
+                canvas.height = letterRect.height * scale + padding * 2;
                 const ctx = canvas.getContext('2d');
 
                 // Get computed font style
@@ -80,14 +81,19 @@
                 const fontSize = parseFloat(style.fontSize) * scale;
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
 
-                // Draw the letter
-                ctx.fillText(char, 0, 0);
+                // Draw the letter centered in canvas
+                ctx.fillText(char, canvas.width / 2, canvas.height / 2);
 
                 // Get pixel data and find edge points
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
+
+                // Calculate center offset
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
 
                 // Sample points along the edges
                 for (let y = 0; y < canvas.height; y += 2) {
@@ -99,9 +105,16 @@
                         if (alpha > 50) {
                             const isEdge = this.isEdgePixel(data, x, y, canvas.width, canvas.height);
                             if (isEdge) {
+                                // Map canvas position back to element position
+                                // Canvas is centered, so offset from center
+                                const offsetX = (x - centerX) / scale;
+                                const offsetY = (y - centerY) / scale;
+                                const mappedX = relX + letterRect.width / 2 + offsetX;
+                                const mappedY = relY + letterRect.height / 2 + offsetY;
+
                                 this.outlinePoints.push({
-                                    x: relX + (x / scale),
-                                    y: relY + (y / scale),
+                                    x: mappedX,
+                                    y: mappedY,
                                     letter: letter
                                 });
                             }
@@ -161,6 +174,20 @@
             const y = point.y + (Math.random() - 0.5) * 3;
             const size = 1.5 + Math.random() * 2;
 
+            // Festive colors - mostly white with occasional blue or gold sparkles
+            const colorRoll = Math.random();
+            let color = '#ffffff';
+            let glow = '';
+            if (colorRoll < 0.08) {
+                color = '#93c5fd'; // Light blue
+                glow = 'box-shadow: 0 0 4px #93c5fd;';
+            } else if (colorRoll < 0.12) {
+                color = '#fcd34d'; // Gold
+                glow = 'box-shadow: 0 0 4px #fcd34d;';
+            } else if (colorRoll < 0.18) {
+                glow = 'box-shadow: 0 0 3px #fff;'; // White sparkle
+            }
+
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
             particle.dataset.letter = point.letter.dataset.letter;
@@ -169,6 +196,8 @@
                 top: ${y}px;
                 width: ${size}px;
                 height: ${size}px;
+                background: ${color};
+                ${glow}
             `;
 
             this.container.appendChild(particle);

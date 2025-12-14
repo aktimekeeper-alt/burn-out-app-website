@@ -96,6 +96,24 @@ body {
     background: #fff;
 }
 
+/* Twinkle animation for festive sparkle */
+.snow-particle:nth-child(5n) {
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+.snow-particle:nth-child(7n) {
+    animation: twinkle 2.5s ease-in-out infinite 0.5s;
+}
+
+.snow-particle:nth-child(11n) {
+    animation: twinkle 1.8s ease-in-out infinite 1s;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
 @keyframes snowLand {
     0% {
         transform: translateY(-10px);

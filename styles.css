@@ -76,79 +76,35 @@ body {
    Snow Pile on Logo Text
    ======================================== */
 
-/* Snow cap sitting ON TOP of each letter */
-.letter::before {
-    content: '';
+/* Container for snow particles on the whole logo */
+.logo-snow-container {
     position: absolute;
-    top: 0.12em;
-    left: -8%;
-    right: -8%;
-    height: 0.25em;
-    background:
-        radial-gradient(ellipse 0.14em 0.12em at 8% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 0.18em 0.14em at 25% 100%, rgba(255,255,255,0.9) 50%, transparent 50%),
-        radial-gradient(ellipse 0.16em 0.13em at 45% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 0.2em 0.15em at 65% 100%, rgba(255,255,255,0.9) 50%, transparent 50%),
-        radial-gradient(ellipse 0.17em 0.13em at 85% 100%, rgba(255,255,255,0.95) 50%, transparent 50%);
-    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    filter: blur(0.3px);
-}
-
-
-/* Snow accumulation container - sits on top of letter */
-.snow-on-letter {
-    position: absolute;
-    top: 0.05em;
-    left: -10%;
-    width: 120%;
-    height: 0.35em;
-    pointer-events: none;
-    z-index: 20;
+    z-index: 100;
     overflow: visible;
 }
 
+/* Individual snow particle */
 .snow-particle {
     position: absolute;
-    background: radial-gradient(circle,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(240, 248, 255, 0.9) 30%,
-        rgba(220, 240, 255, 0.6) 60%,
-        transparent 100%);
+    background: #fff;
     border-radius: 50%;
-    box-shadow:
-        0 0 6px rgba(255, 255, 255, 0.9),
-        0 0 2px rgba(255, 255, 255, 1);
-    animation: snowSettle 0.4s ease-out forwards;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    animation: snowLand 0.3s ease-out forwards;
 }
 
-@keyframes snowSettle {
+@keyframes snowLand {
     0% {
-        transform: translateY(-15px) scale(0.3);
+        transform: translateY(-10px);
         opacity: 0;
     }
-    70% {
-        transform: translateY(2px) scale(1.1);
-        opacity: 1;
-    }
     100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
         opacity: 1;
-    }
-}
-
-.snow-particle.melting {
-    animation: snowMelt 0.6s ease-out forwards;
-}
-
-@keyframes snowMelt {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(0.2) translateY(8px);
-        opacity: 0;
     }
 }
 

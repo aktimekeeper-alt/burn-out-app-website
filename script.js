@@ -21,105 +21,98 @@
     };
 
     /**
-     * Logo Snow Accumulation Effect - Snow on each letter
+     * Logo Snow Accumulation Effect - Snow particles on letters
      */
     class LogoSnowAccumulation {
         constructor() {
             this.logo = document.getElementById('mainLogo');
             this.letters = document.querySelectorAll('.letter');
-            this.letterSnow = new Map(); // Track snow per letter
+            this.particles = [];
+            this.maxParticles = 150;
 
             if (!this.logo || !this.letters.length) return;
             this.init();
         }
 
         init() {
-            // Add snow containers to each letter
-            this.letters.forEach(letter => {
-                const snowContainer = document.createElement('div');
-                snowContainer.className = 'snow-on-letter';
-                letter.appendChild(snowContainer);
-                this.letterSnow.set(letter, { container: snowContainer, particles: [] });
-            });
+            // Create container for all snow particles
+            this.container = document.createElement('div');
+            this.container.className = 'logo-snow-container';
+            this.logo.style.position = 'relative';
+            this.logo.appendChild(this.container);
 
             // Start accumulating snow
             this.accumulateSnow();
 
-            // Add interaction - shake off snow on hover per letter
+            // Add shake interaction
             this.letters.forEach(letter => {
-                letter.addEventListener('mouseenter', () => {
-                    this.shakeOffLetter(letter);
-                });
+                letter.addEventListener('mouseenter', () => this.shakeOff(letter));
             });
         }
 
         accumulateSnow() {
-            // Add initial snow particles
-            for (let i = 0; i < 35; i++) {
-                setTimeout(() => this.addParticleToRandomLetter(), i * 80);
+            // Add initial particles rapidly
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => this.addParticle(), i * 50);
             }
 
-            // Continue adding snow periodically
-            setInterval(() => {
-                this.addParticleToRandomLetter();
-            }, 600);
+            // Continue adding particles
+            setInterval(() => this.addParticle(), 150);
         }
 
-        addParticleToRandomLetter() {
-            const letterArray = Array.from(this.letters);
-            const randomLetter = letterArray[Math.floor(Math.random() * letterArray.length)];
-            this.addParticle(randomLetter);
-        }
-
-        addParticle(letter) {
-            const data = this.letterSnow.get(letter);
-            if (!data) return;
-
-            // Limit particles per letter
-            if (data.particles.length >= 6) {
-                const old = data.particles.shift();
-                old.classList.add('melting');
-                setTimeout(() => old.remove(), 600);
+        addParticle() {
+            if (this.particles.length >= this.maxParticles) {
+                const old = this.particles.shift();
+                old.remove();
             }
+
+            // Pick random letter
+            const letter = this.letters[Math.floor(Math.random() * this.letters.length)];
+            const letterRect = letter.getBoundingClientRect();
+            const logoRect = this.logo.getBoundingClientRect();
+
+            // Position relative to logo container
+            const relX = letterRect.left - logoRect.left;
+            const relY = letterRect.top - logoRect.top;
+
+            // Place particle on top edge of letter (with small offset into letter)
+            const x = relX + Math.random() * letterRect.width;
+            const y = relY + (letterRect.height * 0.15) + Math.random() * (letterRect.height * 0.1);
+            const size = 2 + Math.random() * 3;
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
-
-            // Position snow at bottom of container (which aligns with letter top)
-            const x = 5 + Math.random() * 90; // Spread across letter
-            const y = 50 + Math.random() * 50; // Bottom half of container = on letter top
-            const size = Math.random() * 5 + 4;
-
             particle.style.cssText = `
-                left: ${x}%;
-                top: ${y}%;
+                left: ${x}px;
+                top: ${y}px;
                 width: ${size}px;
                 height: ${size}px;
             `;
 
-            data.container.appendChild(particle);
-            data.particles.push(particle);
+            this.container.appendChild(particle);
+            this.particles.push(particle);
         }
 
-        shakeOffLetter(letter) {
-            const data = this.letterSnow.get(letter);
-            if (!data) return;
-
-            // Add shake animation to letter
+        shakeOff(letter) {
             letter.classList.add('shake');
             setTimeout(() => letter.classList.remove('shake'), 300);
 
-            // Remove some particles from this letter
-            const toRemove = Math.min(3, data.particles.length);
-            for (let i = 0; i < toRemove; i++) {
-                const particle = data.particles.shift();
-                if (particle) {
-                    particle.style.transition = 'all 0.4s ease-out';
-                    particle.style.transform = `translateY(30px) rotate(${Math.random() * 360}deg)`;
-                    particle.style.opacity = '0';
-                    setTimeout(() => particle.remove(), 400);
+            // Remove nearby particles
+            const letterRect = letter.getBoundingClientRect();
+            const logoRect = this.logo.getBoundingClientRect();
+            const relX = letterRect.left - logoRect.left;
+
+            this.particles = this.particles.filter(p => {
+                const px = parseFloat(p.style.left);
+                if (px >= relX && px <= relX + letterRect.width) {
+                    p.style.transition = 'all 0.4s ease-out';
+                    p.style.transform = 'translateY(50px)';
+                    p.style.opacity = '0';
+                    setTimeout(() => p.remove(), 400);
+                    return false;
                 }
-            }
+                return true;
+            });
         }
     }
 

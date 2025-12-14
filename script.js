@@ -73,10 +73,33 @@
             const relX = letterRect.left - logoRect.left;
             const relY = letterRect.top - logoRect.top;
 
-            // Place particles across the ENTIRE letter (snow covers the text)
-            const x = relX + Math.random() * letterRect.width;
-            const y = relY + Math.random() * letterRect.height;
-            const size = 1 + Math.random() * 2.5; // Small particles 1-3.5px
+            // Place particles along the OUTLINE/EDGES of the letter
+            const edgeThickness = 8; // How thick the outline area is
+            let x, y;
+
+            // Pick a random edge: 0=top, 1=right, 2=bottom, 3=left
+            const edge = Math.floor(Math.random() * 4);
+
+            switch(edge) {
+                case 0: // Top edge
+                    x = relX + Math.random() * letterRect.width;
+                    y = relY + Math.random() * edgeThickness;
+                    break;
+                case 1: // Right edge
+                    x = relX + letterRect.width - Math.random() * edgeThickness;
+                    y = relY + Math.random() * letterRect.height;
+                    break;
+                case 2: // Bottom edge
+                    x = relX + Math.random() * letterRect.width;
+                    y = relY + letterRect.height - Math.random() * edgeThickness;
+                    break;
+                case 3: // Left edge
+                    x = relX + Math.random() * edgeThickness;
+                    y = relY + Math.random() * letterRect.height;
+                    break;
+            }
+
+            const size = 1 + Math.random() * 2; // Small particles 1-3px
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';

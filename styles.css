@@ -228,15 +228,9 @@ body {
     position: relative;
     display: inline-block;
     color: transparent;
-    background: linear-gradient(180deg,
-        #ffffff 0%,
-        #e2e8f0 50%,
-        #94a3b8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.15);
     text-shadow:
-        0 0 60px rgba(255, 255, 255, 0.3),
-        0 0 100px rgba(147, 197, 253, 0.2);
+        0 0 40px rgba(255, 255, 255, 0.1);
 }
 
 .logo-tagline {

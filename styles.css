@@ -219,16 +219,16 @@ body {
 .letter::before {
     content: '';
     position: absolute;
-    top: -5px;
+    top: 12px;
     left: -5%;
     right: -5%;
-    height: 16px;
+    height: 18px;
     background:
-        radial-gradient(ellipse 12px 10px at 10% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 16px 12px at 30% 100%, rgba(255,255,255,0.9) 50%, transparent 50%),
-        radial-gradient(ellipse 14px 11px at 50% 100%, rgba(255,255,255,0.95) 50%, transparent 50%),
-        radial-gradient(ellipse 18px 13px at 70% 100%, rgba(255,255,255,0.9) 50%, transparent 50%),
-        radial-gradient(ellipse 12px 10px at 90% 100%, rgba(255,255,255,0.95) 50%, transparent 50%);
+        radial-gradient(ellipse 12px 10px at 10% 0%, rgba(255,255,255,0.95) 50%, transparent 50%),
+        radial-gradient(ellipse 16px 12px at 30% 0%, rgba(255,255,255,0.9) 50%, transparent 50%),
+        radial-gradient(ellipse 14px 11px at 50% 0%, rgba(255,255,255,0.95) 50%, transparent 50%),
+        radial-gradient(ellipse 18px 13px at 70% 0%, rgba(255,255,255,0.9) 50%, transparent 50%),
+        radial-gradient(ellipse 12px 10px at 90% 0%, rgba(255,255,255,0.95) 50%, transparent 50%);
     z-index: 10;
     pointer-events: none;
     filter: blur(0.5px);
@@ -255,10 +255,10 @@ body {
 /* Snow accumulation container - sits on top of letter */
 .snow-on-letter {
     position: absolute;
-    top: -12px;
+    top: 5px;
     left: -10%;
     width: 120%;
-    height: 20px;
+    height: 25px;
     pointer-events: none;
     z-index: 20;
     overflow: visible;

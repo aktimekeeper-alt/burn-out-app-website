@@ -203,9 +203,9 @@
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
 
-            // Position snow at bottom of container (which aligns with letter top)
+            // Position snow at top of container (which sits on letter top)
             const x = 5 + Math.random() * 90; // Spread across letter
-            const y = 14 + Math.random() * 6; // At bottom of 20px container = top of letter
+            const y = 2 + Math.random() * 8; // Near top of container = on letter top
             const size = Math.random() * 5 + 4;
 
             particle.style.cssText = `

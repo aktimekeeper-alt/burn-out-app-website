@@ -15,7 +15,7 @@
         maxDuration: 10,
         minDelay: 0,
         maxDelay: 8,
-        logoSnowMax: 2000
+        logoSnowMax: 10000
     };
 
     /**
@@ -71,47 +71,42 @@
                 const letterRect = letter.getBoundingClientRect();
                 const relX = letterRect.left - containerRect.left;
                 const relY = letterRect.top - containerRect.top;
+                const width = letterRect.width;
+                const height = letterRect.height;
 
-                // Create offscreen canvas to render the letter
+                // Create canvas to detect letter shape
                 const canvas = document.createElement('canvas');
-                const scale = 2;
-                const width = Math.ceil(letterRect.width);
-                const height = Math.ceil(letterRect.height);
-                canvas.width = width * scale;
-                canvas.height = height * scale;
+                const scale = 1;
+                canvas.width = Math.ceil(width);
+                canvas.height = Math.ceil(height);
                 const ctx = canvas.getContext('2d');
 
-                // Get computed font style - match the actual rendering
+                // Match font exactly
                 const style = window.getComputedStyle(letter);
-                const fontSize = parseFloat(style.fontSize) * scale;
+                const fontSize = parseFloat(style.fontSize);
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
                 ctx.textBaseline = 'top';
                 ctx.textAlign = 'center';
 
-                // Draw letter centered horizontally in canvas
+                // Draw letter
                 ctx.fillText(char, canvas.width / 2, 0);
 
-                // Get pixel data and find edge points
+                // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
-                // Sample points along the edges
-                for (let y = 0; y < canvas.height; y += 2) {
-                    for (let x = 0; x < canvas.width; x += 2) {
-                        const i = (y * canvas.width + x) * 4;
-                        const alpha = data[i + 3];
-
-                        if (alpha > 50) {
-                            const isEdge = this.isEdgePixel(data, x, y, canvas.width, canvas.height);
+                // Find ALL visible pixels (not just edges) for solid fill
+                for (let py = 0; py < canvas.height; py += 1) {
+                    for (let px = 0; px < canvas.width; px += 1) {
+                        const i = (py * canvas.width + px) * 4;
+                        if (data[i + 3] > 100) {
+                            // Check if edge pixel for outline effect
+                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height);
                             if (isEdge) {
-                                // Direct mapping - canvas matches element size
-                                const mappedX = relX + x / scale;
-                                const mappedY = relY + y / scale;
-
                                 this.outlinePoints.push({
-                                    x: mappedX,
-                                    y: mappedY,
+                                    x: relX + px,
+                                    y: relY + py,
                                     letter: letter
                                 });
                             }
@@ -122,22 +117,13 @@
         }
 
         isEdgePixel(data, x, y, width, height) {
-            // Check if any neighboring pixel is transparent (making this an edge)
-            const neighbors = [
-                [-1, 0], [1, 0], [0, -1], [0, 1],
-                [-1, -1], [1, -1], [-1, 1], [1, 1]
-            ];
-
+            const neighbors = [[-1, 0], [1, 0], [0, -1], [0, 1]];
             for (const [dx, dy] of neighbors) {
                 const nx = x + dx;
                 const ny = y + dy;
-                if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
-                    return true; // At boundary
-                }
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height) return true;
                 const ni = (ny * width + nx) * 4;
-                if (data[ni + 3] < 50) {
-                    return true; // Neighbor is transparent
-                }
+                if (data[ni + 3] < 100) return true;
             }
             return false;
         }
@@ -146,13 +132,13 @@
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
                 // Add initial particles very rapidly to fill letters
-                for (let i = 0; i < 1500; i++) {
-                    setTimeout(() => this.addParticle(), i * 2);
+                for (let i = 0; i < 5000; i++) {
+                    setTimeout(() => this.addParticle(), i);
                 }
 
                 // Continue adding particles until full
-                setInterval(() => this.addParticle(), 10);
-            }, 100);
+                setInterval(() => this.addParticle(), 5);
+            }, 50);
         }
 
         addParticle() {

@@ -88,8 +88,9 @@
                 ctx.textBaseline = 'top';
                 ctx.textAlign = 'left';
 
-                // Draw at 0,0 - let the span handle positioning
-                ctx.fillText(char, 0, 0);
+                // Draw with vertical offset to match browser rendering
+                const yOffset = fontSize * 0.15;
+                ctx.fillText(char, 0, yOffset);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -260,8 +261,9 @@
                 ctx.textBaseline = 'top';
                 ctx.textAlign = 'left';
 
-                // Draw at 0,0 - uppercase to match CSS text-transform
-                ctx.fillText(char.toUpperCase(), 0, 0);
+                // Draw with vertical offset to match browser rendering
+                const yOffset = fontSize * 0.15;
+                ctx.fillText(char.toUpperCase(), 0, yOffset);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;

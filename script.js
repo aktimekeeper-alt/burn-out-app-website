@@ -70,15 +70,14 @@
                 const dist = Math.sqrt((px - mouseX) ** 2 + (py - mouseY) ** 2);
 
                 if (dist < brushRadius) {
-                    // Shake off this particle
-                    const angle = Math.atan2(py - mouseY, px - mouseX);
-                    const throwX = Math.cos(angle) * (20 + Math.random() * 30);
-                    const throwY = 40 + Math.random() * 20;
+                    // Float down gently
+                    const driftX = (Math.random() - 0.5) * 30;
+                    const fallY = 80 + Math.random() * 40;
 
-                    p.style.transition = 'all 0.4s ease-out';
-                    p.style.transform = `translate(${throwX}px, ${throwY}px)`;
+                    p.style.transition = 'all 1s ease-out';
+                    p.style.transform = `translate(${driftX}px, ${fallY}px)`;
                     p.style.opacity = '0';
-                    setTimeout(() => p.remove(), 400);
+                    setTimeout(() => p.remove(), 1000);
                     return false;
                 }
                 return true;
@@ -271,14 +270,14 @@
                 const dist = Math.sqrt((px - mouseX) ** 2 + (py - mouseY) ** 2);
 
                 if (dist < brushRadius) {
-                    const angle = Math.atan2(py - mouseY, px - mouseX);
-                    const throwX = Math.cos(angle) * (10 + Math.random() * 20);
-                    const throwY = 25 + Math.random() * 15;
+                    // Float down gently
+                    const driftX = (Math.random() - 0.5) * 20;
+                    const fallY = 50 + Math.random() * 30;
 
-                    p.style.transition = 'all 0.3s ease-out';
-                    p.style.transform = `translate(${throwX}px, ${throwY}px)`;
+                    p.style.transition = 'all 0.8s ease-out';
+                    p.style.transform = `translate(${driftX}px, ${fallY}px)`;
                     p.style.opacity = '0';
-                    setTimeout(() => p.remove(), 300);
+                    setTimeout(() => p.remove(), 800);
                     return false;
                 }
                 return true;

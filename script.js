@@ -89,7 +89,7 @@
                 ctx.textAlign = 'left';
 
                 // Draw with vertical offset to match browser rendering
-                const yOffset = fontSize * 0.15;
+                const yOffset = fontSize * 0.25;
                 ctx.fillText(char, 0, yOffset);
 
                 // Get pixel data
@@ -262,7 +262,7 @@
                 ctx.textAlign = 'left';
 
                 // Draw with vertical offset to match browser rendering
-                const yOffset = fontSize * 0.15;
+                const yOffset = fontSize * 0.25;
                 ctx.fillText(char.toUpperCase(), 0, yOffset);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);

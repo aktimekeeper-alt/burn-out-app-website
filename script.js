@@ -35,11 +35,12 @@
         }
 
         init() {
-            // Create container for all snow particles
+            // Create container for all snow particles on the logo-text span
+            this.logoText = this.logo.querySelector('.logo-text');
             this.container = document.createElement('div');
             this.container.className = 'logo-snow-container';
-            this.logo.style.position = 'relative';
-            this.logo.appendChild(this.container);
+            this.logoText.style.position = 'relative';
+            this.logoText.appendChild(this.container);
 
             // Extract outline points from each letter
             this.extractOutlinePoints();
@@ -60,19 +61,21 @@
         }
 
         extractOutlinePoints() {
-            const logoRect = this.logo.getBoundingClientRect();
+            const containerRect = this.logoText.getBoundingClientRect();
 
             this.letters.forEach(letter => {
                 const char = letter.textContent;
                 const letterRect = letter.getBoundingClientRect();
-                const relX = letterRect.left - logoRect.left;
-                const relY = letterRect.top - logoRect.top;
+                const relX = letterRect.left - containerRect.left;
+                const relY = letterRect.top - containerRect.top;
 
                 // Create offscreen canvas to render the letter
                 const canvas = document.createElement('canvas');
                 const scale = 2;
-                canvas.width = letterRect.width * scale;
-                canvas.height = letterRect.height * scale;
+                const width = Math.ceil(letterRect.width);
+                const height = Math.ceil(letterRect.height);
+                canvas.width = width * scale;
+                canvas.height = height * scale;
                 const ctx = canvas.getContext('2d');
 
                 // Get computed font style - match the actual rendering
@@ -81,15 +84,10 @@
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
                 ctx.textBaseline = 'top';
-                ctx.textAlign = 'left';
+                ctx.textAlign = 'center';
 
-                // Measure to center the letter properly
-                const metrics = ctx.measureText(char);
-                const textWidth = metrics.width;
-                const drawX = (canvas.width - textWidth) / 2;
-                const drawY = 0;
-
-                ctx.fillText(char, drawX, drawY);
+                // Draw letter centered horizontally in canvas
+                ctx.fillText(char, canvas.width / 2, 0);
 
                 // Get pixel data and find edge points
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -170,18 +168,18 @@
             const y = point.y + (Math.random() - 0.5) * 3;
             const size = 1.5 + Math.random() * 2;
 
-            // Festive colors - mostly white with occasional blue or gold sparkles
+            // Festive colors - mostly white with red and green twinkles
             const colorRoll = Math.random();
             let color = '#ffffff';
             let glow = '';
-            if (colorRoll < 0.08) {
-                color = '#93c5fd'; // Light blue
-                glow = 'box-shadow: 0 0 4px #93c5fd;';
-            } else if (colorRoll < 0.12) {
-                color = '#fcd34d'; // Gold
-                glow = 'box-shadow: 0 0 4px #fcd34d;';
-            } else if (colorRoll < 0.18) {
-                glow = 'box-shadow: 0 0 3px #fff;'; // White sparkle
+            if (colorRoll < 0.10) {
+                color = '#ef4444'; // Red
+                glow = 'box-shadow: 0 0 6px #ef4444;';
+            } else if (colorRoll < 0.20) {
+                color = '#22c55e'; // Green
+                glow = 'box-shadow: 0 0 6px #22c55e;';
+            } else if (colorRoll < 0.28) {
+                glow = 'box-shadow: 0 0 4px #fff;'; // White sparkle
             }
 
             const particle = document.createElement('div');

@@ -6,18 +6,16 @@
 (function() {
     'use strict';
 
-    // Configuration
+    // Configuration - Dense snow like reference
     const CONFIG = {
-        snowflakeCount: 75,
-        minSize: 3,
-        maxSize: 8,
-        minDuration: 8,
-        maxDuration: 20,
+        snowflakeCount: 200,
+        minSize: 1,
+        maxSize: 4,
+        minDuration: 4,
+        maxDuration: 12,
         minDelay: 0,
-        maxDelay: 15,
-        cursorSnowMax: 25,
-        cursorCollectRadius: 60,
-        logoSnowMax: 40
+        maxDelay: 10,
+        logoSnowMax: 300
     };
 
     /**
@@ -28,7 +26,7 @@
             this.logo = document.getElementById('mainLogo');
             this.letters = document.querySelectorAll('.letter');
             this.particles = [];
-            this.maxParticles = 150;
+            this.maxParticles = CONFIG.logoSnowMax;
 
             if (!this.logo || !this.letters.length) return;
             this.init();
@@ -52,12 +50,12 @@
 
         accumulateSnow() {
             // Add initial particles rapidly
-            for (let i = 0; i < 80; i++) {
-                setTimeout(() => this.addParticle(), i * 50);
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => this.addParticle(), i * 20);
             }
 
-            // Continue adding particles
-            setInterval(() => this.addParticle(), 150);
+            // Continue adding particles faster
+            setInterval(() => this.addParticle(), 50);
         }
 
         addParticle() {
@@ -75,12 +73,10 @@
             const relX = letterRect.left - logoRect.left;
             const relY = letterRect.top - logoRect.top;
 
-            // Place particle on top edge of letter
+            // Place particle on top portion of letter (dense accumulation)
             const x = relX + Math.random() * letterRect.width;
-            const y = relY + (letterRect.height * 0.1) + Math.random() * (letterRect.height * 0.15);
-            const size = CONFIG.minSize + Math.random() * (CONFIG.maxSize - CONFIG.minSize); // Same as falling snowflakes (3-8px)
-
-            const opacity = 0.5 + Math.random() * 0.5; // 0.5-1 opacity
+            const y = relY + (letterRect.height * 0.05) + Math.random() * (letterRect.height * 0.25);
+            const size = 1 + Math.random() * 3; // Small particles 1-4px
 
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
@@ -89,7 +85,6 @@
                 top: ${y}px;
                 width: ${size}px;
                 height: ${size}px;
-                opacity: ${opacity};
             `;
 
             this.container.appendChild(particle);
@@ -108,10 +103,10 @@
             this.particles = this.particles.filter(p => {
                 const px = parseFloat(p.style.left);
                 if (px >= relX && px <= relX + letterRect.width) {
-                    p.style.transition = 'all 0.4s ease-out';
-                    p.style.transform = 'translateY(50px)';
+                    p.style.transition = 'all 0.3s ease-out';
+                    p.style.transform = 'translateY(40px)';
                     p.style.opacity = '0';
-                    setTimeout(() => p.remove(), 400);
+                    setTimeout(() => p.remove(), 300);
                     return false;
                 }
                 return true;
@@ -296,30 +291,25 @@
         style.textContent = `
             .snowflake {
                 position: absolute;
-                color: rgba(255, 255, 255, 0.9);
                 pointer-events: none;
                 border-radius: 50%;
-                background: radial-gradient(circle,
-                    rgba(255, 255, 255, 0.95) 0%,
-                    rgba(255, 255, 255, 0.5) 40%,
-                    transparent 70%);
-                box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+                background: #fff;
                 animation: fall linear infinite;
             }
 
             @keyframes fall {
                 0% {
-                    transform: translateY(-10vh) translateX(0) rotate(0deg);
+                    transform: translateY(-2vh) translateX(0);
                     opacity: 0;
                 }
-                10% {
+                5% {
                     opacity: 1;
                 }
-                90% {
+                95% {
                     opacity: 1;
                 }
                 100% {
-                    transform: translateY(105vh) translateX(var(--drift, 0px)) rotate(360deg);
+                    transform: translateY(102vh) translateX(var(--drift, 0px));
                     opacity: 0;
                 }
             }

@@ -1,6 +1,6 @@
 /**
  * BURNOUT - Winter Snow Effect
- * Performant snowfall animation with CSS-based movement
+ * Performant snowfall with cursor collection and text accumulation
  */
 
 (function() {
@@ -8,18 +8,194 @@
 
     // Configuration
     const CONFIG = {
-        snowflakeCount: 75,  // Keep between 50-100 for performance
+        snowflakeCount: 75,
         minSize: 3,
         maxSize: 8,
         minDuration: 8,
         maxDuration: 20,
         minDelay: 0,
         maxDelay: 15,
-        symbols: ['•', '●', '◦', '○', '◌']
+        cursorSnowMax: 25,
+        cursorCollectRadius: 60,
+        logoSnowMax: 40
     };
 
     /**
-     * Snow Effect Class
+     * Cursor Snow Collection Effect
+     */
+    class CursorSnowCollector {
+        constructor() {
+            this.container = document.getElementById('cursorSnow');
+            this.snowflakes = [];
+            this.mouseX = 0;
+            this.mouseY = 0;
+            this.isActive = false;
+            this.collectTimer = null;
+
+            if (!this.container) return;
+            this.init();
+        }
+
+        init() {
+            // Track mouse movement
+            document.addEventListener('mousemove', (e) => {
+                this.mouseX = e.clientX;
+                this.mouseY = e.clientY;
+                this.container.style.left = this.mouseX + 'px';
+                this.container.style.top = this.mouseY + 'px';
+
+                if (!this.isActive) {
+                    this.isActive = true;
+                    this.container.classList.add('active');
+                }
+
+                // Reset inactivity timer
+                clearTimeout(this.collectTimer);
+                this.collectTimer = setTimeout(() => {
+                    this.releaseSnow();
+                }, 3000);
+            });
+
+            document.addEventListener('mouseleave', () => {
+                this.isActive = false;
+                this.container.classList.remove('active');
+                this.releaseSnow();
+            });
+
+            // Collect snow periodically when moving
+            this.startCollecting();
+        }
+
+        startCollecting() {
+            setInterval(() => {
+                if (this.isActive && this.snowflakes.length < CONFIG.cursorSnowMax) {
+                    this.addSnowflake();
+                }
+            }, 200);
+        }
+
+        addSnowflake() {
+            const flake = document.createElement('div');
+            flake.className = 'cursor-snowflake';
+
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 35 + 10;
+            const x = Math.cos(angle) * distance + 50;
+            const y = Math.sin(angle) * distance + 50;
+            const size = Math.random() * 4 + 3;
+            const delay = Math.random() * 2;
+
+            flake.style.cssText = `
+                left: ${x}px;
+                top: ${y}px;
+                width: ${size}px;
+                height: ${size}px;
+                animation-delay: ${delay}s;
+            `;
+
+            this.container.appendChild(flake);
+            this.snowflakes.push(flake);
+        }
+
+        releaseSnow() {
+            // Animate snowflakes falling away
+            this.snowflakes.forEach((flake, index) => {
+                setTimeout(() => {
+                    flake.style.transition = 'all 0.8s ease-out';
+                    flake.style.transform = `translateY(${50 + Math.random() * 30}px)`;
+                    flake.style.opacity = '0';
+
+                    setTimeout(() => flake.remove(), 800);
+                }, index * 50);
+            });
+            this.snowflakes = [];
+        }
+    }
+
+    /**
+     * Logo Snow Accumulation Effect
+     */
+    class LogoSnowAccumulation {
+        constructor() {
+            this.logo = document.getElementById('mainLogo');
+            this.snowPile = document.getElementById('logoSnowPile');
+            this.particles = [];
+
+            if (!this.logo || !this.snowPile) return;
+            this.init();
+        }
+
+        init() {
+            // Start accumulating snow on the logo
+            this.accumulateSnow();
+
+            // Add interaction - shake off snow on hover
+            this.logo.addEventListener('mouseenter', () => {
+                this.shakeOffSome();
+            });
+        }
+
+        accumulateSnow() {
+            // Add initial snow particles
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => this.addParticle(), i * 100);
+            }
+
+            // Continue adding snow periodically
+            setInterval(() => {
+                if (this.particles.length < CONFIG.logoSnowMax) {
+                    this.addParticle();
+                }
+            }, 800);
+        }
+
+        addParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'snow-particle';
+
+            const logoRect = this.logo.getBoundingClientRect();
+            const pileRect = this.snowPile.getBoundingClientRect();
+
+            // Position snow on top edge of letters
+            const x = Math.random() * 100;
+            const y = Math.random() * 15 - 5; // Near top of text
+            const size = Math.random() * 6 + 3;
+
+            particle.style.cssText = `
+                left: ${x}%;
+                top: ${y}%;
+                width: ${size}px;
+                height: ${size}px;
+            `;
+
+            this.snowPile.appendChild(particle);
+            this.particles.push(particle);
+
+            // Remove oldest particles if too many
+            if (this.particles.length > CONFIG.logoSnowMax) {
+                const old = this.particles.shift();
+                old.classList.add('melting');
+                setTimeout(() => old.remove(), 800);
+            }
+        }
+
+        shakeOffSome() {
+            // Remove some particles when hovering
+            const toRemove = Math.min(5, this.particles.length);
+            for (let i = 0; i < toRemove; i++) {
+                const particle = this.particles.shift();
+                if (particle) {
+                    particle.style.transition = 'all 0.5s ease-out';
+                    particle.style.transform = `translateY(20px) rotate(${Math.random() * 360}deg)`;
+                    particle.style.opacity = '0';
+                    setTimeout(() => particle.remove(), 500);
+                }
+            }
+        }
+    }
+
+    /**
+     * Snow Effect Class - Main falling snow
      */
     class SnowEffect {
         constructor() {
@@ -30,7 +206,6 @@
         }
 
         init() {
-            // Check for reduced motion preference
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 return;
             }
@@ -54,7 +229,6 @@
             const snowflake = document.createElement('div');
             snowflake.className = 'snowflake';
 
-            // Random properties
             const size = this.random(CONFIG.minSize, CONFIG.maxSize);
             const duration = this.random(CONFIG.minDuration, CONFIG.maxDuration);
             const delay = this.random(CONFIG.minDelay, CONFIG.maxDelay);
@@ -62,7 +236,6 @@
             const opacity = this.random(0.3, 1);
             const drift = this.random(-30, 30);
 
-            // Apply styles
             snowflake.style.cssText = `
                 left: ${startX}%;
                 width: ${size}px;
@@ -73,9 +246,6 @@
                 --drift: ${drift}px;
             `;
 
-            // Use different snowflake representations for variety
-            snowflake.innerHTML = CONFIG.symbols[Math.floor(Math.random() * CONFIG.symbols.length)];
-
             return snowflake;
         }
 
@@ -84,7 +254,6 @@
         }
 
         handleVisibility() {
-            // Pause animation when page is not visible
             document.addEventListener('visibilitychange', () => {
                 const snowflakes = this.container.querySelectorAll('.snowflake');
                 snowflakes.forEach(flake => {
@@ -117,23 +286,17 @@
             const button = this.form.querySelector('button');
             const input = this.form.querySelector('input');
 
-            // Show loading state
             button.classList.add('loading');
             button.disabled = true;
 
-            // Simulate API call
             setTimeout(() => {
                 button.classList.remove('loading');
                 button.disabled = false;
                 input.value = '';
 
-                // Show success message
                 this.successMessage.classList.add('show');
-
-                // Create a burst of snowflakes as celebration
                 this.celebrateBurst();
 
-                // Hide success message after 5 seconds
                 setTimeout(() => {
                     this.successMessage.classList.remove('show');
                 }, 5000);
@@ -144,15 +307,13 @@
             const container = document.getElementById('snowContainer');
             if (!container) return;
 
-            // Create temporary extra snowflakes
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 30; i++) {
                 const flake = document.createElement('div');
                 flake.className = 'snowflake celebration';
-                flake.innerHTML = '•';
 
-                const size = Math.random() * 6 + 4;
+                const size = Math.random() * 8 + 4;
                 const startX = 40 + Math.random() * 20;
-                const duration = Math.random() * 3 + 2;
+                const duration = Math.random() * 2 + 1;
                 const drift = (Math.random() - 0.5) * 200;
 
                 flake.style.cssText = `
@@ -166,8 +327,6 @@
                 `;
 
                 container.appendChild(flake);
-
-                // Remove after animation
                 setTimeout(() => flake.remove(), duration * 1000);
             }
         }
@@ -182,7 +341,6 @@
         }
 
         init() {
-            // Fade in elements on scroll
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
@@ -196,7 +354,6 @@
                 });
             }, observerOptions);
 
-            // Observe feature cards
             document.querySelectorAll('.feature-card, .car-tag').forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(20px)';
@@ -218,11 +375,10 @@
                 pointer-events: none;
                 border-radius: 50%;
                 background: radial-gradient(circle,
-                    rgba(255, 255, 255, 0.9) 0%,
-                    rgba(255, 255, 255, 0.4) 50%,
+                    rgba(255, 255, 255, 0.95) 0%,
+                    rgba(255, 255, 255, 0.5) 40%,
                     transparent 70%);
-                text-indent: -9999px;
-                box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+                box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
                 animation: fall linear infinite;
             }
 
@@ -249,7 +405,7 @@
                     opacity: 1;
                 }
                 100% {
-                    transform: translateY(30vh) translateX(var(--drift, 0px)) scale(0.5);
+                    transform: translateY(40vh) translateX(var(--drift, 0px)) scale(0.3);
                     opacity: 0;
                 }
             }
@@ -284,11 +440,12 @@
     function init() {
         addDynamicStyles();
         new SnowEffect();
+        new CursorSnowCollector();
+        new LogoSnowAccumulation();
         new WaitlistForm();
         new ScrollAnimations();
     }
 
-    // Run on DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

@@ -132,7 +132,7 @@
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
                 // Add initial particles very rapidly to fill letters
-                for (let i = 0; i < 5000; i++) {
+                for (let i = 0; i < 7500; i++) {
                     setTimeout(() => this.addParticle(), i);
                 }
 

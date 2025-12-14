@@ -610,6 +610,275 @@ button.loading .btn-loading {
 }
 
 /* ========================================
+   Christmas Town
+   ======================================== */
+
+.christmas-town {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    margin-top: 4rem;
+}
+
+.town-scene {
+    position: relative;
+    width: 100%;
+    height: 150px;
+}
+
+.snow-ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(200, 220, 240, 0.8) 100%);
+    border-radius: 100% 100% 0 0 / 50px 50px 0 0;
+}
+
+/* Trees */
+.tree {
+    position: absolute;
+    bottom: 25px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 60px solid #0d4a2a;
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.3));
+}
+
+.tree::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 50px solid #0f5a32;
+}
+
+.tree::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 40px solid #117a3e;
+}
+
+/* Houses */
+.house {
+    position: absolute;
+    bottom: 25px;
+    width: 50px;
+}
+
+.house .roof {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 25px solid #4a3728;
+    position: relative;
+    left: -5px;
+}
+
+.house .building {
+    width: 50px;
+    height: 40px;
+    background: #2d1f14;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 5px;
+    gap: 4px;
+}
+
+.house.tall .building {
+    height: 70px;
+}
+
+.house.small {
+    width: 40px;
+}
+
+.house.small .roof {
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 20px solid #4a3728;
+    left: -5px;
+}
+
+.house.small .building {
+    width: 40px;
+    height: 35px;
+}
+
+.house .window {
+    width: 10px;
+    height: 10px;
+    background: #1a1a2e;
+    border: 1px solid #3d3d5c;
+}
+
+.house .window.lit {
+    background: #fcd34d;
+    box-shadow: 0 0 8px #fcd34d, 0 0 15px rgba(252, 211, 77, 0.5);
+}
+
+.house .door {
+    width: 12px;
+    height: 18px;
+    background: #1a1209;
+    border-radius: 6px 6px 0 0;
+    margin-top: 2px;
+}
+
+.house .chimney {
+    position: absolute;
+    top: -35px;
+    right: 8px;
+    width: 10px;
+    height: 20px;
+    background: #3d2817;
+}
+
+.house .smoke {
+    position: absolute;
+    top: -8px;
+    left: 2px;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: smoke 2s ease-out infinite;
+}
+
+.house .smoke::before,
+.house .smoke::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+}
+
+.house .smoke::before {
+    top: -10px;
+    left: -3px;
+    animation: smoke 2s ease-out infinite 0.5s;
+}
+
+.house .smoke::after {
+    top: -20px;
+    left: 2px;
+    animation: smoke 2s ease-out infinite 1s;
+}
+
+@keyframes smoke {
+    0% {
+        opacity: 0.6;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(1.5);
+    }
+}
+
+/* Church */
+.church {
+    position: absolute;
+    bottom: 25px;
+    width: 60px;
+}
+
+.church .steeple {
+    width: 20px;
+    height: 40px;
+    background: #2d1f14;
+    margin: 0 auto;
+    position: relative;
+}
+
+.church .steeple::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -5px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 20px solid #4a3728;
+}
+
+.church .cross {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 16px;
+    background: #fcd34d;
+    box-shadow: 0 0 10px #fcd34d;
+}
+
+.church .cross::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: -4px;
+    width: 12px;
+    height: 4px;
+    background: #fcd34d;
+    box-shadow: 0 0 10px #fcd34d;
+}
+
+.church .church-body {
+    width: 60px;
+    height: 50px;
+    background: #2d1f14;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+}
+
+.church .church-window {
+    width: 15px;
+    height: 25px;
+    background: #1a1a2e;
+    border-radius: 50% 50% 0 0;
+    border: 1px solid #3d3d5c;
+}
+
+.church .church-window.lit {
+    background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+    box-shadow: 0 0 15px rgba(252, 211, 77, 0.7);
+}
+
+.church .church-door {
+    width: 16px;
+    height: 22px;
+    background: #1a1209;
+    border-radius: 8px 8px 0 0;
+    margin-top: 5px;
+}
+
+/* ========================================
    Footer
    ======================================== */
 

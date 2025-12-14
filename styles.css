@@ -655,75 +655,77 @@ button.loading .btn-loading {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 30px;
+    height: 35px;
     background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(200, 220, 240, 0.8) 100%);
-    border-radius: 100% 100% 0 0 / 50px 50px 0 0;
+        rgba(255, 255, 255, 1) 0%,
+        rgba(230, 240, 250, 0.95) 40%,
+        rgba(200, 220, 240, 0.85) 100%);
+    border-radius: 100% 100% 0 0 / 60px 60px 0 0;
+    box-shadow:
+        inset 0 5px 15px rgba(255,255,255,0.8),
+        inset 0 -5px 20px rgba(150, 180, 220, 0.3);
 }
 
-/* Trees with snow */
+/* Trees with snow - softer layered look */
 .tree {
     position: absolute;
     bottom: 25px;
-    width: 0;
-    height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-bottom: 60px solid #0d4a2a;
+    width: 24px;
+    height: 55px;
+    background: linear-gradient(180deg, #0f5a32 0%, #0d4a2a 100%);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.4));
+    border-radius: 0 0 2px 2px;
 }
 
 .tree::before {
     content: '';
     position: absolute;
-    top: 15px;
-    left: -10px;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 50px solid #0f5a32;
+    top: 12px;
+    left: -2px;
+    width: 28px;
+    height: 48px;
+    background: linear-gradient(180deg, #117a3e 0%, #0f5a32 100%);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
 }
 
 .tree::after {
     content: '';
     position: absolute;
-    top: 30px;
-    left: -8px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 40px solid #117a3e;
+    top: 22px;
+    left: -4px;
+    width: 32px;
+    height: 42px;
+    background: linear-gradient(180deg, #15803d 0%, #117a3e 100%);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
 }
 
 /* Snow caps on trees */
 .tree-snow {
     position: absolute;
-    top: -8px;
-    left: -4px;
-    width: 8px;
-    height: 5px;
-    background: #fff;
+    top: -2px;
+    left: 6px;
+    width: 12px;
+    height: 6px;
+    background: radial-gradient(ellipse at center, #fff 0%, rgba(230,240,250,0.9) 100%);
     border-radius: 50%;
     box-shadow:
-        -3px 8px 0 2px rgba(255,255,255,0.9),
-        5px 10px 0 1px rgba(255,255,255,0.8),
-        -5px 20px 0 2px rgba(255,255,255,0.85),
-        4px 25px 0 1px rgba(255,255,255,0.75);
+        -6px 12px 0 3px rgba(255,255,255,0.9),
+        8px 14px 0 2px rgba(255,255,255,0.85),
+        -8px 26px 0 4px rgba(255,255,255,0.85),
+        6px 30px 0 2px rgba(255,255,255,0.8);
 }
 
 /* Star on tree top */
 .tree-star {
     position: absolute;
-    top: -12px;
-    left: -4px;
-    width: 8px;
-    height: 8px;
-    background: #fcd34d;
+    top: -6px;
+    left: 7px;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, #fef08a 0%, #fcd34d 100%);
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    box-shadow: 0 0 8px #fcd34d;
+    box-shadow: 0 0 10px #fcd34d, 0 0 20px rgba(252, 211, 77, 0.5);
     animation: starTwinkle 2s ease-in-out infinite;
 }
 
@@ -732,7 +734,7 @@ button.loading .btn-loading {
     50% { opacity: 0.7; transform: scale(0.9); }
 }
 
-/* Houses */
+/* Houses - Cute rounded style */
 .house {
     position: absolute;
     bottom: 25px;
@@ -740,21 +742,21 @@ button.loading .btn-loading {
 }
 
 .house .roof {
-    width: 0;
-    height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 25px solid #4a3728;
+    width: 60px;
+    height: 28px;
+    background: linear-gradient(135deg, #5d4332 0%, #4a3728 100%);
+    border-radius: 50% 50% 0 0;
     position: relative;
     left: -5px;
+    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
 }
 
 /* Christmas lights on roof */
 .house .lights {
     position: absolute;
-    top: 22px;
-    left: -22px;
-    width: 44px;
+    top: 24px;
+    left: -18px;
+    width: 50px;
     height: 4px;
     display: flex;
     justify-content: space-between;
@@ -767,6 +769,7 @@ button.loading .btn-loading {
     height: 1px;
     background: #333;
     top: 1px;
+    border-radius: 2px;
 }
 
 .house .light-bulb {
@@ -790,13 +793,15 @@ button.loading .btn-loading {
 .house .building {
     width: 50px;
     height: 40px;
-    background: #2d1f14;
+    background: linear-gradient(180deg, #3d2a1c 0%, #2d1f14 100%);
+    border-radius: 0 0 8px 8px;
     position: relative;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
     padding: 5px;
+    box-shadow: inset 0 5px 10px rgba(255,255,255,0.05);
     gap: 4px;
 }
 
@@ -809,15 +814,20 @@ button.loading .btn-loading {
 }
 
 .house.small .roof {
-    border-left: 25px solid transparent;
-    border-right: 25px solid transparent;
-    border-bottom: 20px solid #4a3728;
+    width: 50px;
+    height: 22px;
+    background: linear-gradient(135deg, #5d4332 0%, #4a3728 100%);
+    border-radius: 50% 50% 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
     left: -5px;
 }
 
 .house.small .building {
     width: 40px;
     height: 35px;
+    border-radius: 0 0 6px 6px;
 }
 
 .house .window {
@@ -825,19 +835,22 @@ button.loading .btn-loading {
     height: 10px;
     background: #1a1a2e;
     border: 1px solid #3d3d5c;
+    border-radius: 4px;
 }
 
 .house .window.lit {
-    background: #fcd34d;
+    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
     box-shadow: 0 0 8px #fcd34d, 0 0 15px rgba(252, 211, 77, 0.5);
+    border-color: #f59e0b;
 }
 
 .house .door {
     width: 12px;
     height: 18px;
-    background: #1a1209;
-    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, #2d1f14 0%, #1a1209 100%);
+    border-radius: 8px 8px 0 0;
     margin-top: 2px;
+    position: relative;
 }
 
 .house .chimney {
@@ -846,7 +859,8 @@ button.loading .btn-loading {
     right: 8px;
     width: 10px;
     height: 20px;
-    background: #3d2817;
+    background: linear-gradient(90deg, #4d3220 0%, #3d2817 50%, #4d3220 100%);
+    border-radius: 2px 2px 0 0;
 }
 
 .house .smoke {
@@ -895,154 +909,174 @@ button.loading .btn-loading {
 
 /* Small Trees */
 .tree.small {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 40px solid #0d4a2a;
+    width: 16px;
+    height: 38px;
 }
 
 .tree.small::before {
-    top: 10px;
-    left: -7px;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 35px solid #0f5a32;
+    top: 8px;
+    left: -1px;
+    width: 18px;
+    height: 34px;
 }
 
 .tree.small::after {
-    top: 18px;
-    left: -6px;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 28px solid #117a3e;
+    top: 14px;
+    left: -2px;
+    width: 20px;
+    height: 30px;
 }
 
-/* Cars - Cute side-view style */
+.tree.small .tree-snow {
+    top: -2px;
+    left: 3px;
+    width: 10px;
+    height: 5px;
+    box-shadow:
+        -4px 10px 0 2px rgba(255,255,255,0.9),
+        5px 12px 0 2px rgba(255,255,255,0.85),
+        -5px 20px 0 3px rgba(255,255,255,0.85);
+}
+
+.tree.small .tree-star {
+    top: -5px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+}
+
+/* Cars - Cute rounded bubble style */
 .car {
     position: absolute;
     bottom: 25px;
-    width: 35px;
+    width: 36px;
     height: 14px;
-    background: #3b82f6;
-    border-radius: 3px 6px 2px 2px;
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+    border-radius: 8px 12px 4px 4px;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
 }
 
-/* Car cabin/roof */
+/* Car cabin/roof - bubble style */
 .car::before {
     content: '';
     position: absolute;
     bottom: 8px;
-    left: 8px;
-    width: 16px;
-    height: 10px;
+    left: 7px;
+    width: 18px;
+    height: 12px;
     background: inherit;
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
-/* Wheels */
+/* Wheels - cute round */
 .car::after {
     content: '';
     position: absolute;
-    bottom: -3px;
+    bottom: -4px;
     left: 4px;
-    width: 6px;
-    height: 6px;
-    background: #1f2937;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #374151 30%, #1f2937 100%);
     border-radius: 50%;
     box-shadow:
-        inset 0 0 0 1px #374151,
+        inset 0 0 0 2px #4b5563,
         20px 0 0 #1f2937,
-        20px 0 0 0 #1f2937,
-        inset 20px 0 0 1px #374151;
+        inset 20px 0 0 2px #4b5563;
 }
 
-/* Car window */
+/* Car window - rounded */
 .car-window {
     position: absolute;
     bottom: 10px;
-    left: 10px;
-    width: 6px;
-    height: 6px;
-    background: rgba(150, 200, 255, 0.7);
-    border-radius: 2px 2px 0 0;
-    box-shadow: 7px 0 0 rgba(150, 200, 255, 0.7);
+    left: 9px;
+    width: 7px;
+    height: 7px;
+    background: linear-gradient(135deg, rgba(200, 230, 255, 0.9) 0%, rgba(150, 200, 255, 0.7) 100%);
+    border-radius: 4px 4px 2px 2px;
+    box-shadow: 8px 0 0 rgba(150, 200, 255, 0.7);
 }
 
 /* Car colors */
 .car.red {
-    background: #ef4444;
+    background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
 }
 
 .car.red::before {
-    background: #ef4444;
+    background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
 }
 
 .car.blue {
-    background: #3b82f6;
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
 }
 
 .car.blue::before {
-    background: #3b82f6;
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
 }
 
 .car.green {
-    background: #22c55e;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
 }
 
 .car.green::before {
-    background: #22c55e;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
 }
 
 .car.yellow {
-    background: #eab308;
+    background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
 }
 
 .car.yellow::before {
-    background: #eab308;
+    background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
 }
 
-/* Sports car variant - lower, sleeker */
+/* Sports car variant - sleek bubble */
 .car.sports {
-    height: 12px;
-    border-radius: 3px 10px 2px 2px;
+    height: 11px;
+    border-radius: 6px 16px 4px 4px;
 }
 
 .car.sports::before {
-    bottom: 6px;
-    left: 8px;
-    width: 16px;
-    height: 8px;
-    border-radius: 8px 4px 0 0;
+    bottom: 5px;
+    left: 10px;
+    width: 14px;
+    height: 9px;
+    border-radius: 12px 6px 0 0;
 }
 
-/* Truck variant - taller with bed */
+/* Truck variant - rounded pickup */
 .car.truck {
-    width: 45px;
-    height: 18px;
-    background: #64748b;
-    border-radius: 3px 4px 2px 2px;
+    width: 46px;
+    height: 16px;
+    background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+    border-radius: 6px 8px 4px 4px;
 }
 
 .car.truck::before {
-    bottom: 10px;
+    bottom: 8px;
     left: 2px;
     width: 16px;
     height: 14px;
-    background: #64748b;
-    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+    border-radius: 8px 8px 0 0;
 }
 
 .car.truck::after {
     left: 6px;
-    box-shadow: 28px 0 0 #1f2937;
+    width: 8px;
+    height: 8px;
+    box-shadow:
+        inset 0 0 0 2px #4b5563,
+        28px 0 0 #1f2937,
+        inset 28px 0 0 2px #4b5563;
 }
 
-/* Moving car with headlights */
+/* Moving car with headlights glow */
 .car.moving {
     animation: carDrive 8s linear infinite;
 }
 
 .car.moving::before {
-    box-shadow: 28px -4px 8px rgba(255, 220, 100, 0.6);
+    box-shadow: 30px -2px 12px rgba(255, 220, 100, 0.7);
 }
 
 @keyframes carDrive {
@@ -1050,7 +1084,7 @@ button.loading .btn-loading {
     100% { transform: translateX(60px); }
 }
 
-/* Garage */
+/* Garage - Rounded cozy style */
 .garage {
     position: absolute;
     bottom: 25px;
@@ -1058,19 +1092,20 @@ button.loading .btn-loading {
 }
 
 .garage-roof {
-    width: 0;
-    height: 0;
-    border-left: 32px solid transparent;
-    border-right: 32px solid transparent;
-    border-bottom: 18px solid #4a3728;
+    width: 64px;
+    height: 22px;
+    background: linear-gradient(135deg, #5d4332 0%, #4a3728 100%);
+    border-radius: 40% 40% 0 0;
     position: relative;
     left: -4px;
+    box-shadow: inset 0 -3px 8px rgba(0,0,0,0.2);
 }
 
 .garage-body {
     width: 55px;
     height: 38px;
-    background: #2d1f14;
+    background: linear-gradient(180deg, #3d2a1c 0%, #2d1f14 100%);
+    border-radius: 0 0 6px 6px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1079,19 +1114,20 @@ button.loading .btn-loading {
 .garage-door {
     width: 40px;
     height: 30px;
-    background: #1a1209;
-    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, #252015 0%, #1a1209 100%);
+    border-radius: 10px 10px 0 0;
     display: flex;
     justify-content: center;
-    padding-top: 4px;
+    padding-top: 6px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .garage-window {
-    width: 12px;
-    height: 8px;
-    background: #fcd34d;
-    box-shadow: 0 0 8px rgba(252, 211, 77, 0.5);
-    border-radius: 2px;
+    width: 14px;
+    height: 10px;
+    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+    box-shadow: 0 0 10px rgba(252, 211, 77, 0.6);
+    border-radius: 4px;
 }
 
 /* Street Lights */

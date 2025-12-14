@@ -203,10 +203,10 @@
             const particle = document.createElement('div');
             particle.className = 'snow-particle';
 
-            // Position snow sitting ON the letter (at bottom of container)
+            // Position snow at bottom of container (which aligns with letter top)
             const x = 5 + Math.random() * 90; // Spread across letter
-            const y = 12 + Math.random() * 10; // At bottom of container = top of letter
-            const size = Math.random() * 6 + 5;
+            const y = 14 + Math.random() * 6; // At bottom of 20px container = top of letter
+            const size = Math.random() * 5 + 4;
 
             particle.style.cssText = `
                 left: ${x}%;

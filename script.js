@@ -74,41 +74,37 @@
                 const width = letterRect.width;
                 const height = letterRect.height;
 
-                // Create canvas with 2x scale for better accuracy
+                // Create canvas matching letter size
                 const canvas = document.createElement('canvas');
-                const scale = 2;
-                canvas.width = Math.ceil(width * scale);
-                canvas.height = Math.ceil(height * scale);
+                canvas.width = Math.ceil(width);
+                canvas.height = Math.ceil(height);
                 const ctx = canvas.getContext('2d');
-                ctx.scale(scale, scale);
 
                 // Match font exactly
                 const style = window.getComputedStyle(letter);
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'alphabetic';
-                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.textAlign = 'left';
 
-                // Draw letter centered with proper baseline
-                const metrics = ctx.measureText(char);
-                const baselineY = metrics.fontBoundingBoxAscent || fontSize * 0.8;
-                ctx.fillText(char, width / 2, baselineY);
+                // Draw at 0,0 - let the span handle positioning
+                ctx.fillText(char, 0, 0);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
                 // Find edge pixels for outline effect
-                for (let py = 0; py < canvas.height; py += scale) {
-                    for (let px = 0; px < canvas.width; px += scale) {
+                for (let py = 0; py < canvas.height; py++) {
+                    for (let px = 0; px < canvas.width; px++) {
                         const i = (py * canvas.width + px) * 4;
                         if (data[i + 3] > 100) {
-                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height, scale);
+                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height);
                             if (isEdge) {
                                 this.outlinePoints.push({
-                                    x: relX + px / scale,
-                                    y: relY + py / scale,
+                                    x: relX + px,
+                                    y: relY + py,
                                     letter: letter
                                 });
                             }
@@ -251,38 +247,34 @@
                 const width = letterRect.width;
                 const height = letterRect.height;
 
-                // Create canvas with 2x scale for better accuracy
+                // Create canvas matching letter size
                 const canvas = document.createElement('canvas');
-                const scale = 2;
-                canvas.width = Math.ceil(width * scale);
-                canvas.height = Math.ceil(height * scale);
+                canvas.width = Math.ceil(width);
+                canvas.height = Math.ceil(height);
                 const ctx = canvas.getContext('2d');
-                ctx.scale(scale, scale);
 
                 const style = window.getComputedStyle(letter);
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `300 ${fontSize}px "Exo 2", sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'alphabetic';
-                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.textAlign = 'left';
 
-                // Draw letter centered with proper baseline
-                const metrics = ctx.measureText(char.toUpperCase());
-                const baselineY = metrics.fontBoundingBoxAscent || fontSize * 0.8;
-                ctx.fillText(char.toUpperCase(), width / 2, baselineY);
+                // Draw at 0,0 - uppercase to match CSS text-transform
+                ctx.fillText(char.toUpperCase(), 0, 0);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
-                for (let py = 0; py < canvas.height; py += scale) {
-                    for (let px = 0; px < canvas.width; px += scale) {
+                for (let py = 0; py < canvas.height; py++) {
+                    for (let px = 0; px < canvas.width; px++) {
                         const i = (py * canvas.width + px) * 4;
                         if (data[i + 3] > 100) {
-                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height, scale);
+                            const isEdge = this.isEdgePixel(data, px, py, canvas.width, canvas.height);
                             if (isEdge) {
                                 this.outlinePoints.push({
-                                    x: relX + px / scale,
-                                    y: relY + py / scale,
+                                    x: relX + px,
+                                    y: relY + py,
                                     letter: letter
                                 });
                             }

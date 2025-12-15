@@ -126,6 +126,9 @@
                 const data = imageData.data;
 
                 // Find edge pixels for outline effect
+                // Offset to align canvas text with DOM text
+                const yOffset = height - ascent;
+
                 for (let py = 0; py < canvas.height; py++) {
                     for (let px = 0; px < canvas.width; px++) {
                         const i = (py * canvas.width + px) * 4;
@@ -134,7 +137,7 @@
                             if (isEdge) {
                                 this.outlinePoints.push({
                                     x: relX + px,
-                                    y: relY + py,
+                                    y: relY + py + yOffset,
                                     letter: letter
                                 });
                             }
@@ -333,6 +336,9 @@
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
 
+                // Offset to align canvas text with DOM text
+                const yOffset = height - ascent;
+
                 for (let py = 0; py < canvas.height; py++) {
                     for (let px = 0; px < canvas.width; px++) {
                         const i = (py * canvas.width + px) * 4;
@@ -341,7 +347,7 @@
                             if (isEdge) {
                                 this.outlinePoints.push({
                                     x: relX + px,
-                                    y: relY + py,
+                                    y: relY + py + yOffset,
                                     letter: letter
                                 });
                             }

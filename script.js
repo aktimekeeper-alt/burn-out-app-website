@@ -106,11 +106,11 @@
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'alphabetic';
+                ctx.textBaseline = 'top';
                 ctx.textAlign = 'left';
 
-                // Draw at baseline position
-                ctx.fillText(char, 0, fontSize * 0.85);
+                // Draw at top-left to match DOM positioning
+                ctx.fillText(char, 0, 0);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -307,11 +307,11 @@
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `300 ${fontSize}px "Exo 2", sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'alphabetic';
+                ctx.textBaseline = 'top';
                 ctx.textAlign = 'left';
 
-                // Draw at baseline position
-                ctx.fillText(char.toUpperCase(), 0, fontSize * 0.85);
+                // Draw at top-left to match DOM positioning
+                ctx.fillText(char.toUpperCase(), 0, 0);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;

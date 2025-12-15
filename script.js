@@ -31,7 +31,13 @@
             this.outlinePoints = []; // Store all outline points
 
             if (!this.logo || !this.letters.length) return;
-            this.init();
+
+            // Wait for fonts to load before initializing
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => this.init());
+            } else {
+                setTimeout(() => this.init(), 500);
+            }
         }
 
         init() {
@@ -95,10 +101,11 @@
                 const width = letterRect.width;
                 const height = letterRect.height;
 
-                // Create canvas matching letter size
+                // Create canvas with extra space for font metrics
                 const canvas = document.createElement('canvas');
-                canvas.width = Math.ceil(width);
-                canvas.height = Math.ceil(height);
+                const scale = 1;
+                canvas.width = Math.ceil(width * scale) + 10;
+                canvas.height = Math.ceil(height * scale) + 10;
                 const ctx = canvas.getContext('2d');
 
                 // Match font exactly
@@ -106,11 +113,13 @@
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `700 ${fontSize}px Rajdhani, sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
-                ctx.textAlign = 'left';
 
-                // Draw at top-left to match DOM positioning
-                ctx.fillText(char, 0, 0);
+                // Measure text to get proper positioning
+                const metrics = ctx.measureText(char);
+                const ascent = metrics.actualBoundingBoxAscent || fontSize * 0.8;
+
+                // Draw text aligned to match DOM element positioning
+                ctx.fillText(char, 0, ascent);
 
                 // Get pixel data
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -236,7 +245,13 @@
             this.outlinePoints = [];
 
             if (!this.tagline || !this.letters.length) return;
-            this.init();
+
+            // Wait for fonts to load before initializing
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => this.init());
+            } else {
+                setTimeout(() => this.init(), 500);
+            }
         }
 
         init() {
@@ -297,21 +312,23 @@
                 const width = letterRect.width;
                 const height = letterRect.height;
 
-                // Create canvas matching letter size
+                // Create canvas with extra space
                 const canvas = document.createElement('canvas');
-                canvas.width = Math.ceil(width);
-                canvas.height = Math.ceil(height);
+                canvas.width = Math.ceil(width) + 10;
+                canvas.height = Math.ceil(height) + 10;
                 const ctx = canvas.getContext('2d');
 
                 const style = window.getComputedStyle(letter);
                 const fontSize = parseFloat(style.fontSize);
                 ctx.font = `300 ${fontSize}px "Exo 2", sans-serif`;
                 ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
-                ctx.textAlign = 'left';
 
-                // Draw at top-left to match DOM positioning
-                ctx.fillText(char.toUpperCase(), 0, 0);
+                // Measure text to get proper positioning
+                const metrics = ctx.measureText(char.toUpperCase());
+                const ascent = metrics.actualBoundingBoxAscent || fontSize * 0.8;
+
+                // Draw text aligned to match DOM positioning
+                ctx.fillText(char.toUpperCase(), 0, ascent);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;

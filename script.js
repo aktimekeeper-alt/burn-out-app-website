@@ -6,15 +6,8 @@
 (function() {
     'use strict';
 
-    // Configuration - Optimized for performance
+    // Configuration
     const CONFIG = {
-        snowflakeCount: 100,
-        minSize: 2,
-        maxSize: 4,
-        minDuration: 5,
-        maxDuration: 12,
-        minDelay: 0,
-        maxDelay: 10,
         logoSnowMax: 5000
     };
 
@@ -419,95 +412,6 @@
     }
 
     /**
-     * Snow Effect Class - Main falling snow
-     */
-    class SnowEffect {
-        constructor() {
-            this.container = document.getElementById('snowContainer');
-            if (!this.container) return;
-
-            this.init();
-        }
-
-        init() {
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                return;
-            }
-
-            this.createSnowflakes();
-            this.handleVisibility();
-        }
-
-        createSnowflakes() {
-            const fragment = document.createDocumentFragment();
-
-            for (let i = 0; i < CONFIG.snowflakeCount; i++) {
-                const snowflake = this.createSnowflake();
-                fragment.appendChild(snowflake);
-            }
-
-            this.container.appendChild(fragment);
-        }
-
-        createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-
-            const size = this.random(CONFIG.minSize, CONFIG.maxSize);
-            const duration = this.random(CONFIG.minDuration, CONFIG.maxDuration);
-            const delay = this.random(CONFIG.minDelay, CONFIG.maxDelay);
-            const startX = this.random(0, 100);
-            const drift = this.random(-20, 20);
-
-            // Mostly white with occasional colored Christmas lights
-            const roll = Math.random();
-            let color = '#ffffff';
-            let extraStyle = '';
-
-            if (roll < 0.08) {
-                color = '#ef4444'; // Red
-                extraStyle = 'box-shadow: 0 0 6px #ef4444;';
-            } else if (roll < 0.16) {
-                color = '#22c55e'; // Green
-                extraStyle = 'box-shadow: 0 0 6px #22c55e;';
-            } else if (roll < 0.22) {
-                color = '#3b82f6'; // Blue
-                extraStyle = 'box-shadow: 0 0 6px #3b82f6;';
-            } else if (roll < 0.28) {
-                color = '#fcd34d'; // Gold
-                extraStyle = 'box-shadow: 0 0 6px #fcd34d;';
-            }
-
-            snowflake.style.cssText = `
-                left: ${startX}%;
-                width: ${size}px;
-                height: ${size}px;
-                opacity: ${color === '#ffffff' ? this.random(0.5, 1) : 1};
-                animation-duration: ${duration}s;
-                animation-delay: -${delay}s;
-                --drift: ${drift}px;
-                background: ${color};
-                ${extraStyle}
-            `;
-
-            return snowflake;
-        }
-
-        random(min, max) {
-            return Math.random() * (max - min) + min;
-        }
-
-        handleVisibility() {
-            document.addEventListener('visibilitychange', () => {
-                const snowflakes = this.container.querySelectorAll('.snowflake');
-                snowflakes.forEach(flake => {
-                    flake.style.animationPlayState = document.hidden ? 'paused' : 'running';
-                });
-            });
-        }
-    }
-
-    /**
      * Waitlist Form Handler
      */
     class WaitlistForm {
@@ -613,31 +517,6 @@
     function addDynamicStyles() {
         const style = document.createElement('style');
         style.textContent = `
-            .snowflake {
-                position: absolute;
-                pointer-events: none;
-                border-radius: 50%;
-                background: #fff;
-                animation: fall linear infinite;
-            }
-
-            @keyframes fall {
-                0% {
-                    transform: translateY(-2vh) translateX(0);
-                    opacity: 0;
-                }
-                5% {
-                    opacity: 1;
-                }
-                95% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(102vh) translateX(var(--drift, 0px));
-                    opacity: 0;
-                }
-            }
-
             @keyframes celebrationFall {
                 0% {
                     transform: translateY(0) translateX(0) scale(1);
@@ -678,7 +557,6 @@
      */
     function init() {
         addDynamicStyles();
-        new SnowEffect();
         new LogoSnowAccumulation();
         new TaglineSnowAccumulation();
         new WaitlistForm();

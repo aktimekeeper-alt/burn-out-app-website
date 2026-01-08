@@ -303,6 +303,8 @@
                 currentSeason = seasonOrder[(idx + 1) % 4];
                 btn.innerHTML = seasons[currentSeason].icon;
                 initParticles(currentSeason);
+                // Also update text particles on logo/tagline
+                if (window.setTextSeason) window.setTextSeason(currentSeason);
                 console.log('Switched to:', currentSeason);
             };
             document.body.appendChild(btn);

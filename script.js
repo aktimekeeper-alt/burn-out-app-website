@@ -33,7 +33,26 @@
         return 'winter';
     }
 
-    const currentSeason = getCurrentSeason();
+    let currentSeason = getCurrentSeason();
+
+    // Store references to update particles when season changes
+    let logoAccumulation = null;
+    let taglineAccumulation = null;
+
+    // Function to change season (called by the button)
+    window.setTextSeason = function(newSeason) {
+        if (!['winter', 'spring', 'summer', 'fall'].includes(newSeason)) return;
+        currentSeason = newSeason;
+        // Clear and restart text particles with new colors
+        if (logoAccumulation) {
+            logoAccumulation.particles.forEach(p => p.remove());
+            logoAccumulation.particles = [];
+        }
+        if (taglineAccumulation) {
+            taglineAccumulation.particles.forEach(p => p.remove());
+            taglineAccumulation.particles = [];
+        }
+    };
 
     /**
      * Logo Snow Accumulation Effect - Snow particles on letter outlines
@@ -584,8 +603,8 @@
      */
     function init() {
         addDynamicStyles();
-        new LogoSnowAccumulation();
-        new TaglineSnowAccumulation();
+        logoAccumulation = new LogoSnowAccumulation();
+        taglineAccumulation = new TaglineSnowAccumulation();
         new WaitlistForm();
         new ScrollAnimations();
     }

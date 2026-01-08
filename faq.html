@@ -179,13 +179,29 @@
     <script crossorigin src="https://unpkg.com/react-snowfall@2.1.1/lib/index.umd.js"></script>
 
     <script>
-        // Initialize react-snowfall
+        // Initialize react-snowfall with random theme each session
         (function() {
             const container = document.getElementById('snowContainer');
             if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-            const root = ReactDOM.createRoot(container);
+            // Different snow themes
+            const themes = [
+                { name: 'Christmas', colors: ['#ef4444', '#22c55e', '#fcd34d'] },
+                { name: 'Winter Blue', colors: ['#3b82f6', '#06b6d4', '#a5f3fc'] },
+                { name: 'Warm Glow', colors: ['#f97316', '#eab308', '#ef4444'] },
+                { name: 'Purple Magic', colors: ['#a855f7', '#ec4899', '#6366f1'] },
+                { name: 'Pure Snow', colors: [] },
+                { name: 'Aurora', colors: ['#22c55e', '#06b6d4', '#a855f7'] },
+                { name: 'Candy', colors: ['#ec4899', '#f472b6', '#fb7185'] },
+                { name: 'Ocean', colors: ['#0ea5e9', '#14b8a6', '#22d3ee'] }
+            ];
 
+            // Pick random theme
+            const theme = themes[Math.floor(Math.random() * themes.length)];
+            console.log('Snow theme:', theme.name);
+
+            // Main white snowfall
+            const root = ReactDOM.createRoot(container);
             root.render(
                 React.createElement(Snowfall, {
                     color: '#ffffff',
@@ -202,61 +218,21 @@
                 })
             );
 
-            // Red flakes
-            const redContainer = document.createElement('div');
-            redContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
-            document.body.insertBefore(redContainer, document.body.firstChild);
-            ReactDOM.createRoot(redContainer).render(
-                React.createElement(Snowfall, {
-                    color: '#ef4444',
-                    snowflakeCount: 15,
-                    radius: [2, 4],
-                    speed: [0.5, 1.5],
-                    wind: [-0.5, 1]
-                })
-            );
-
-            // Green flakes
-            const greenContainer = document.createElement('div');
-            greenContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
-            document.body.insertBefore(greenContainer, document.body.firstChild);
-            ReactDOM.createRoot(greenContainer).render(
-                React.createElement(Snowfall, {
-                    color: '#22c55e',
-                    snowflakeCount: 15,
-                    radius: [2, 4],
-                    speed: [0.5, 1.5],
-                    wind: [-0.5, 1]
-                })
-            );
-
-            // Blue flakes
-            const blueContainer = document.createElement('div');
-            blueContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
-            document.body.insertBefore(blueContainer, document.body.firstChild);
-            ReactDOM.createRoot(blueContainer).render(
-                React.createElement(Snowfall, {
-                    color: '#3b82f6',
-                    snowflakeCount: 10,
-                    radius: [2, 4],
-                    speed: [0.5, 1.5],
-                    wind: [-0.5, 1]
-                })
-            );
-
-            // Gold flakes
-            const goldContainer = document.createElement('div');
-            goldContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
-            document.body.insertBefore(goldContainer, document.body.firstChild);
-            ReactDOM.createRoot(goldContainer).render(
-                React.createElement(Snowfall, {
-                    color: '#fcd34d',
-                    snowflakeCount: 10,
-                    radius: [2, 4],
-                    speed: [0.5, 1.5],
-                    wind: [-0.5, 1]
-                })
-            );
+            // Add colored flakes based on theme
+            theme.colors.forEach((color, i) => {
+                const colorContainer = document.createElement('div');
+                colorContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
+                document.body.insertBefore(colorContainer, document.body.firstChild);
+                ReactDOM.createRoot(colorContainer).render(
+                    React.createElement(Snowfall, {
+                        color: color,
+                        snowflakeCount: 12 + Math.floor(Math.random() * 8),
+                        radius: [2, 4],
+                        speed: [0.5, 1.5],
+                        wind: [-0.5, 1]
+                    })
+                );
+            });
         })();
     </script>
 

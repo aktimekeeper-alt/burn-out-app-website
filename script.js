@@ -11,6 +11,30 @@
         logoSnowMax: 5000
     };
 
+    // Seasonal color schemes for text particles
+    const SEASON_COLORS = {
+        winter: { main: '#ffffff', accents: ['#a5f3fc', '#e0f2fe'], glow: '#fff' },
+        spring: { main: '#fbcfe8', accents: ['#f9a8d4', '#86efac'], glow: '#f9a8d4' },
+        summer: { main: '#fef08a', accents: ['#fde047', '#bef264'], glow: '#fde047' },
+        fall: { main: '#fb923c', accents: ['#f97316', '#dc2626'], glow: '#f97316' }
+    };
+
+    // Get current season (checks URL param first, then date)
+    function getCurrentSeason() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const override = urlParams.get('season');
+        if (override && ['winter', 'spring', 'summer', 'fall'].includes(override)) {
+            return override;
+        }
+        const month = new Date().getMonth();
+        if (month >= 2 && month <= 4) return 'spring';
+        if (month >= 5 && month <= 7) return 'summer';
+        if (month >= 8 && month <= 10) return 'fall';
+        return 'winter';
+    }
+
+    const currentSeason = getCurrentSeason();
+
     /**
      * Logo Snow Accumulation Effect - Snow particles on letter outlines
      * Uses canvas to detect actual letter shapes
@@ -180,18 +204,19 @@
             const y = point.y + (Math.random() - 0.5) * 3;
             const size = 1.5 + Math.random() * 2;
 
-            // Festive colors - mostly white with red and green twinkles
+            // Seasonal colors
+            const colors = SEASON_COLORS[currentSeason];
             const colorRoll = Math.random();
-            let color = '#ffffff';
+            let color = colors.main;
             let glow = '';
-            if (colorRoll < 0.10) {
-                color = '#ef4444'; // Red
-                glow = 'box-shadow: 0 0 6px #ef4444;';
-            } else if (colorRoll < 0.20) {
-                color = '#22c55e'; // Green
-                glow = 'box-shadow: 0 0 6px #22c55e;';
-            } else if (colorRoll < 0.28) {
-                glow = 'box-shadow: 0 0 4px #fff;'; // White sparkle
+            if (colorRoll < 0.15) {
+                color = colors.accents[0];
+                glow = `box-shadow: 0 0 6px ${colors.accents[0]};`;
+            } else if (colorRoll < 0.25) {
+                color = colors.accents[1];
+                glow = `box-shadow: 0 0 6px ${colors.accents[1]};`;
+            } else if (colorRoll < 0.35) {
+                glow = `box-shadow: 0 0 4px ${colors.glow};`;
             }
 
             const particle = document.createElement('div');
@@ -382,17 +407,19 @@
             const y = point.y + (Math.random() - 0.5) * 2;
             const size = 1 + Math.random() * 1.5;
 
+            // Seasonal colors
+            const colors = SEASON_COLORS[currentSeason];
             const colorRoll = Math.random();
-            let color = '#ffffff';
+            let color = colors.main;
             let glow = '';
-            if (colorRoll < 0.10) {
-                color = '#ef4444';
-                glow = 'box-shadow: 0 0 4px #ef4444;';
-            } else if (colorRoll < 0.20) {
-                color = '#22c55e';
-                glow = 'box-shadow: 0 0 4px #22c55e;';
-            } else if (colorRoll < 0.28) {
-                glow = 'box-shadow: 0 0 3px #fff;';
+            if (colorRoll < 0.15) {
+                color = colors.accents[0];
+                glow = `box-shadow: 0 0 4px ${colors.accents[0]};`;
+            } else if (colorRoll < 0.25) {
+                color = colors.accents[1];
+                glow = `box-shadow: 0 0 4px ${colors.accents[1]};`;
+            } else if (colorRoll < 0.35) {
+                glow = `box-shadow: 0 0 3px ${colors.glow};`;
             }
 
             const particle = document.createElement('div');

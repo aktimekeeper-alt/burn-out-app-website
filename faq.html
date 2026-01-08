@@ -174,7 +174,7 @@
     </main>
 
     <script>
-        // Vanilla JS Seasonal Particle System - No dependencies
+        // Vanilla JS Seasonal Particle System with switcher
         (function() {
             const canvas = document.createElement('canvas');
             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
@@ -182,6 +182,14 @@
             const ctx = canvas.getContext('2d');
             let particles = [];
             let animationId;
+
+            const seasons = {
+                winter: { colors: ['#ffffff','#ffffff','#ffffff','#a5f3fc','#e0f2fe'], count: 150, minSize: 1, maxSize: 4, minSpeed: 0.5, maxSpeed: 2, icon: '❄️' },
+                spring: { colors: ['#fbcfe8','#f9a8d4','#ffffff','#86efac'], count: 120, minSize: 2, maxSize: 5, minSpeed: 0.3, maxSpeed: 1.2, icon: '🌸' },
+                summer: { colors: ['#fef08a','#fde047','#bef264'], count: 60, minSize: 1, maxSize: 3, minSpeed: 0.2, maxSpeed: 0.6, icon: '🌟' },
+                fall: { colors: ['#fb923c','#f97316','#fbbf24','#dc2626'], count: 100, minSize: 3, maxSize: 6, minSpeed: 0.4, maxSpeed: 1.5, icon: '🍂' }
+            };
+            const seasonOrder = ['winter', 'spring', 'summer', 'fall'];
 
             function resize() {
                 canvas.width = window.innerWidth;
@@ -192,42 +200,36 @@
 
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-            // URL param override
             const urlParams = new URLSearchParams(window.location.search);
             const seasonOverride = urlParams.get('season');
-
-            // Determine season
             const month = new Date().getMonth();
-            let season;
-            if (seasonOverride && ['spring', 'summer', 'fall', 'winter'].includes(seasonOverride)) {
-                season = seasonOverride;
-            } else if (month >= 2 && month <= 4) season = 'spring';
-            else if (month >= 5 && month <= 7) season = 'summer';
-            else if (month >= 8 && month <= 10) season = 'fall';
-            else season = 'winter';
+            let currentSeason;
+            if (seasonOverride && seasonOrder.includes(seasonOverride)) {
+                currentSeason = seasonOverride;
+            } else if (month >= 2 && month <= 4) currentSeason = 'spring';
+            else if (month >= 5 && month <= 7) currentSeason = 'summer';
+            else if (month >= 8 && month <= 10) currentSeason = 'fall';
+            else currentSeason = 'winter';
 
-            console.log('Season:', season);
+            console.log('Season:', currentSeason);
 
-            const seasons = {
-                winter: { colors: ['#ffffff','#ffffff','#ffffff','#a5f3fc','#e0f2fe'], count: 150, minSize: 1, maxSize: 4, minSpeed: 0.5, maxSpeed: 2 },
-                spring: { colors: ['#fbcfe8','#f9a8d4','#ffffff','#86efac'], count: 120, minSize: 2, maxSize: 5, minSpeed: 0.3, maxSpeed: 1.2 },
-                summer: { colors: ['#fef08a','#fde047','#bef264'], count: 60, minSize: 1, maxSize: 3, minSpeed: 0.2, maxSpeed: 0.6 },
-                fall: { colors: ['#fb923c','#f97316','#fbbf24','#dc2626'], count: 100, minSize: 3, maxSize: 6, minSpeed: 0.4, maxSpeed: 1.5 }
-            };
-
-            const cfg = seasons[season];
-
-            for (let i = 0; i < cfg.count; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize),
-                    speed: cfg.minSpeed + Math.random() * (cfg.maxSpeed - cfg.minSpeed),
-                    wind: (Math.random() - 0.5) * 0.5,
-                    color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
-                    opacity: 0.6 + Math.random() * 0.4
-                });
+            function initParticles(season) {
+                const cfg = seasons[season];
+                particles = [];
+                for (let i = 0; i < cfg.count; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        size: cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize),
+                        speed: cfg.minSpeed + Math.random() * (cfg.maxSpeed - cfg.minSpeed),
+                        wind: (Math.random() - 0.5) * 0.5,
+                        color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
+                        opacity: 0.6 + Math.random() * 0.4
+                    });
+                }
             }
+
+            initParticles(currentSeason);
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -247,6 +249,22 @@
                 animationId = requestAnimationFrame(animate);
             }
             animate();
+
+            const btn = document.createElement('button');
+            btn.id = 'seasonSwitcher';
+            btn.innerHTML = seasons[currentSeason].icon;
+            btn.title = 'Switch season';
+            btn.style.cssText = 'position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.5);color:#fff;font-size:24px;cursor:pointer;z-index:1000;transition:transform 0.2s,background 0.2s;';
+            btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+            btn.onmouseout = () => btn.style.transform = 'scale(1)';
+            btn.onclick = () => {
+                const idx = seasonOrder.indexOf(currentSeason);
+                currentSeason = seasonOrder[(idx + 1) % 4];
+                btn.innerHTML = seasons[currentSeason].icon;
+                initParticles(currentSeason);
+                console.log('Switched to:', currentSeason);
+            };
+            document.body.appendChild(btn);
 
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) cancelAnimationFrame(animationId);

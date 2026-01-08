@@ -6,9 +6,15 @@
 (function() {
     'use strict';
 
-    // Configuration
+    // Performance multiplier (set by inline script, default to 1)
+    const perfMultiplier = window.particlePerfMultiplier || 1;
+
+    // Configuration (adjusted for performance)
     const CONFIG = {
-        logoSnowMax: 5000
+        logoSnowMax: Math.floor(5000 * perfMultiplier),
+        logoInitialBurst: Math.floor(3000 * perfMultiplier),
+        taglineMax: Math.floor(1500 * perfMultiplier),
+        taglineInitialBurst: Math.floor(1000 * perfMultiplier)
     };
 
     // Seasonal color schemes for text particles
@@ -202,7 +208,7 @@
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
                 // Add initial particles to fill letters quickly
-                for (let i = 0; i < 3000; i++) {
+                for (let i = 0; i < CONFIG.logoInitialBurst; i++) {
                     setTimeout(() => this.addParticle(), i * 0.5);
                 }
 
@@ -283,7 +289,7 @@
             this.tagline = document.getElementById('tagline');
             this.letters = document.querySelectorAll('.tagline-letter:not(.space)');
             this.particles = [];
-            this.maxParticles = 1500;
+            this.maxParticles = CONFIG.taglineMax;
             this.outlinePoints = [];
 
             if (!this.tagline || !this.letters.length) return;
@@ -411,7 +417,7 @@
 
         accumulateSnow() {
             setTimeout(() => {
-                for (let i = 0; i < 1000; i++) {
+                for (let i = 0; i < CONFIG.taglineInitialBurst; i++) {
                     setTimeout(() => this.addParticle(), i * 0.8);
                 }
                 setInterval(() => this.addParticle(), 30);

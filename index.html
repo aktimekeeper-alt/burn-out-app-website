@@ -215,6 +215,16 @@
     <script>
         // Vanilla JS Seasonal Particle System with switcher
         (function() {
+            // Performance detection - reduce particles on slower devices
+            const isLowEnd = (function() {
+                const dominated = navigator.hardwareConcurrency <= 2;
+                const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 2;
+                const mobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                return dominated || lowMemory || mobile;
+            })();
+            const perfMultiplier = isLowEnd ? 0.4 : 1;
+            window.particlePerfMultiplier = perfMultiplier; // Share with script.js
+
             const canvas = document.createElement('canvas');
             canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
             document.body.insertBefore(canvas, document.body.firstChild);
@@ -251,12 +261,13 @@
             else if (month >= 8 && month <= 10) currentSeason = 'fall';
             else currentSeason = 'winter';
 
-            console.log('Season:', currentSeason);
+            console.log('Season:', currentSeason, isLowEnd ? '(low-end mode)' : '');
 
             function initParticles(season) {
                 const cfg = seasons[season];
                 particles = [];
-                for (let i = 0; i < cfg.count; i++) {
+                const count = Math.floor(cfg.count * perfMultiplier);
+                for (let i = 0; i < count; i++) {
                     particles.push({
                         x: Math.random() * canvas.width,
                         y: Math.random() * canvas.height,

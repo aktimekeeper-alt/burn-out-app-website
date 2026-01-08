@@ -212,101 +212,84 @@
         </footer>
     </main>
 
-    <!-- React for snowfall -->
-    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/react-snowfall@2.1.1/lib/index.umd.js"></script>
-
     <script>
-        // Initialize seasonal particle effects
+        // Vanilla JS Seasonal Particle System - No dependencies
         (function() {
-            const container = document.getElementById('snowContainer');
-            if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
+            document.body.insertBefore(canvas, document.body.firstChild);
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationId;
 
-            // Check URL param for manual override: ?season=spring|summer|fall|winter
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            // URL param override
             const urlParams = new URLSearchParams(window.location.search);
             const seasonOverride = urlParams.get('season');
 
-            // Determine current season based on month
-            const month = new Date().getMonth(); // 0-11
+            // Determine season
+            const month = new Date().getMonth();
             let season;
             if (seasonOverride && ['spring', 'summer', 'fall', 'winter'].includes(seasonOverride)) {
                 season = seasonOverride;
-            } else if (month >= 2 && month <= 4) season = 'spring';      // Mar-May
-            else if (month >= 5 && month <= 7) season = 'summer'; // Jun-Aug
-            else if (month >= 8 && month <= 10) season = 'fall';  // Sep-Nov
-            else season = 'winter';                                // Dec-Feb
+            } else if (month >= 2 && month <= 4) season = 'spring';
+            else if (month >= 5 && month <= 7) season = 'summer';
+            else if (month >= 8 && month <= 10) season = 'fall';
+            else season = 'winter';
 
             console.log('Season:', season);
 
-            // Seasonal configurations
             const seasons = {
-                winter: {
-                    main: { color: '#ffffff', count: 150, radius: [1, 4], speed: [0.5, 2] },
-                    accents: [
-                        { color: '#a5f3fc', count: 20 }, // Ice blue
-                        { color: '#e0f2fe', count: 15 }  // Light blue
-                    ]
-                },
-                spring: {
-                    main: { color: '#fbcfe8', count: 80, radius: [2, 5], speed: [0.3, 1.2] }, // Cherry blossoms
-                    accents: [
-                        { color: '#f9a8d4', count: 40 }, // Pink petals
-                        { color: '#ffffff', count: 30 }, // White petals
-                        { color: '#86efac', count: 15 }  // Green leaves
-                    ]
-                },
-                summer: {
-                    main: { color: '#fef08a', count: 40, radius: [1, 2], speed: [0.2, 0.6] }, // Fireflies
-                    accents: [
-                        { color: '#fde047', count: 25 }, // Yellow glows
-                        { color: '#bef264', count: 20 }  // Green glows
-                    ]
-                },
-                fall: {
-                    main: { color: '#fb923c', count: 60, radius: [3, 6], speed: [0.4, 1.5] }, // Orange leaves
-                    accents: [
-                        { color: '#f97316', count: 40 }, // Dark orange
-                        { color: '#fbbf24', count: 35 }, // Yellow
-                        { color: '#dc2626', count: 25 }  // Red
-                    ]
-                }
+                winter: { colors: ['#ffffff','#ffffff','#ffffff','#a5f3fc','#e0f2fe'], count: 150, minSize: 1, maxSize: 4, minSpeed: 0.5, maxSpeed: 2 },
+                spring: { colors: ['#fbcfe8','#f9a8d4','#ffffff','#86efac'], count: 120, minSize: 2, maxSize: 5, minSpeed: 0.3, maxSpeed: 1.2 },
+                summer: { colors: ['#fef08a','#fde047','#bef264'], count: 60, minSize: 1, maxSize: 3, minSpeed: 0.2, maxSpeed: 0.6 },
+                fall: { colors: ['#fb923c','#f97316','#fbbf24','#dc2626'], count: 100, minSize: 3, maxSize: 6, minSpeed: 0.4, maxSpeed: 1.5 }
             };
 
-            const config = seasons[season];
+            const cfg = seasons[season];
 
-            // Main particles
-            const root = ReactDOM.createRoot(container);
-            root.render(
-                React.createElement(Snowfall, {
-                    color: config.main.color,
-                    snowflakeCount: config.main.count,
-                    radius: config.main.radius,
-                    speed: config.main.speed,
-                    wind: [-0.5, 1],
-                    style: {
-                        position: 'fixed',
-                        width: '100vw',
-                        height: '100vh',
-                        zIndex: 1
-                    }
-                })
-            );
+            for (let i = 0; i < cfg.count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize),
+                    speed: cfg.minSpeed + Math.random() * (cfg.maxSpeed - cfg.minSpeed),
+                    wind: (Math.random() - 0.5) * 0.5,
+                    color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
+                    opacity: 0.6 + Math.random() * 0.4
+                });
+            }
 
-            // Accent particles
-            config.accents.forEach((accent) => {
-                const accentContainer = document.createElement('div');
-                accentContainer.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;';
-                document.body.insertBefore(accentContainer, document.body.firstChild);
-                ReactDOM.createRoot(accentContainer).render(
-                    React.createElement(Snowfall, {
-                        color: accent.color,
-                        snowflakeCount: accent.count,
-                        radius: config.main.radius,
-                        speed: config.main.speed,
-                        wind: [-0.5, 1]
-                    })
-                );
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speed;
+                    p.x += p.wind;
+                    if (p.y > canvas.height) { p.y = -p.size; p.x = Math.random() * canvas.width; }
+                    if (p.x > canvas.width) p.x = 0;
+                    if (p.x < 0) p.x = canvas.width;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1;
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) cancelAnimationFrame(animationId);
+                else animate();
             });
         })();
     </script>

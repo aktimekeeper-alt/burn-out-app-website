@@ -47,10 +47,12 @@
         if (logoAccumulation) {
             logoAccumulation.particles.forEach(p => p.remove());
             logoAccumulation.particles = [];
+            logoAccumulation.accumulateSnow();
         }
         if (taglineAccumulation) {
             taglineAccumulation.particles.forEach(p => p.remove());
             taglineAccumulation.particles = [];
+            taglineAccumulation.accumulateSnow();
         }
     };
 
@@ -199,14 +201,14 @@
         accumulateSnow() {
             // Wait a bit for outline extraction, then add particles
             setTimeout(() => {
-                // Add initial particles to fill letters
+                // Add initial particles to fill letters quickly
                 for (let i = 0; i < 3000; i++) {
-                    setTimeout(() => this.addParticle(), i * 2);
+                    setTimeout(() => this.addParticle(), i * 0.5);
                 }
 
                 // Continue adding particles slowly until full
                 setInterval(() => this.addParticle(), 20);
-            }, 100);
+            }, 50);
         }
 
         addParticle() {
@@ -410,10 +412,10 @@
         accumulateSnow() {
             setTimeout(() => {
                 for (let i = 0; i < 1000; i++) {
-                    setTimeout(() => this.addParticle(), i * 3);
+                    setTimeout(() => this.addParticle(), i * 0.8);
                 }
                 setInterval(() => this.addParticle(), 30);
-            }, 200);
+            }, 50);
         }
 
         addParticle() {

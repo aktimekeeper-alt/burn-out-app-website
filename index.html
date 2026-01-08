@@ -223,10 +223,16 @@
             const container = document.getElementById('snowContainer');
             if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+            // Check URL param for manual override: ?season=spring|summer|fall|winter
+            const urlParams = new URLSearchParams(window.location.search);
+            const seasonOverride = urlParams.get('season');
+
             // Determine current season based on month
             const month = new Date().getMonth(); // 0-11
             let season;
-            if (month >= 2 && month <= 4) season = 'spring';      // Mar-May
+            if (seasonOverride && ['spring', 'summer', 'fall', 'winter'].includes(seasonOverride)) {
+                season = seasonOverride;
+            } else if (month >= 2 && month <= 4) season = 'spring';      // Mar-May
             else if (month >= 5 && month <= 7) season = 'summer'; // Jun-Aug
             else if (month >= 8 && month <= 10) season = 'fall';  // Sep-Nov
             else season = 'winter';                                // Dec-Feb
